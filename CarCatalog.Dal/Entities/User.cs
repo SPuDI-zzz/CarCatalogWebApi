@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace CarCatalog.Entities;
+namespace CarCatalog.Dal.Entities;
 
 /// <summary>
 ///     Represents a user entity in the application data model, inheriting from <see cref="IdentityUser{TKey}"/>.

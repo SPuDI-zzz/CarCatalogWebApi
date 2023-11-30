@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace CarCatalog.EntityFramework.Setup;
+namespace CarCatalog.Dal.EntityFramework.Setup;
 
 /// <summary>
 ///     Static class for initializing the database during application startup.

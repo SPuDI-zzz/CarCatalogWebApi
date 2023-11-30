@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace CarCatalog.Entities.Common;
+namespace CarCatalog.Dal.Entities.Common;
 
 /// <summary>
 ///     Represents the base entity for the application data model.

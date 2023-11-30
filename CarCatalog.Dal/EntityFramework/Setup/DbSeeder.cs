@@ -1,11 +1,10 @@
-﻿using CarCatalog.BLL.Services.UserService;
-using CarCatalog.Entities;
+﻿using CarCatalog.Dal.Entities;
 using CarCatalog.Shared.Const;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CarCatalog.EntityFramework.Setup;
+namespace CarCatalog.Dal.EntityFramework.Setup;
 
 /// <summary>
 ///      class for seeding initial data into the database during application startup.
@@ -20,11 +19,11 @@ public static class DbSeeder
     private static IServiceScope ServiceScope(IServiceProvider serviceProvider) => serviceProvider.GetService<IServiceScopeFactory>()!.CreateScope();
 
     /// <summary>
-    ///     Helper method to obtain an instance of the <see cref="IUserSevice"/> from the provided <see cref="IServiceProvider"/>.
+    ///     Helper method to obtain an instance of the <see cref="UserManager{User}"/> from the provided <see cref="IServiceProvider"/>.
     /// </summary>
-    /// <param name="serviceProvider">The <see cref="IServiceProvider"/> from which to obtain the user service.</param>
-    /// <returns>An instance of the <see cref="IUserSevice"/>.</returns>
-    private static IUserSevice UserService(IServiceProvider serviceProvider) => ServiceScope(serviceProvider).ServiceProvider.GetRequiredService<IUserSevice>();
+    /// <param name="serviceProvider">The <see cref="IServiceProvider"/> from which to obtain the user manager.</param>
+    /// <returns>An instance of the <see cref="UserManager{User}"/>.</returns>
+    private static UserManager<User> UserManager(IServiceProvider serviceProvider) => ServiceScope(serviceProvider).ServiceProvider.GetRequiredService<UserManager<User>>();
 
     /// <summary>
     ///     Helper method to obtain an instance of the <see cref="MainDbContext"/> from the provided <see cref="IServiceProvider"/>.
@@ -113,23 +112,28 @@ public static class DbSeeder
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     private static async Task ConfigureAdministrator(IServiceProvider serviceProvider)
     {
-        var userService = UserService(serviceProvider);
+        await using var context = DbContext(serviceProvider);
 
-        var isZeroAdminUsers = !(await userService.GetAllUsersAsync())
-            .Where(user => user.Roles
-                .Where(role => role.Equals(AppRoles.Admin))
-                .Any())
-            .Any();
+        var isHasAdminUsers = context.UserRoles
+            .Include(userRoles => userRoles.Role)
+            .Any(userRoles => userRoles.Role.Name!.Equals(AppRoles.Admin));
 
-        if (isZeroAdminUsers)
+        if (isHasAdminUsers)
+            return;
+
+        var user = new User
         {
-            await userService.AddUserAsync(new()
-            {
-                Login = Login,
-                Password = Password,
-                Roles = new[] { AppRoles.Admin }
-            });
-        }
+            UserName = Login
+        };
+        using var userManager = UserManager(serviceProvider);
+            
+        var resultCreateUser = await userManager.CreateAsync(user, Password);
+        if (!resultCreateUser.Succeeded)
+            throw new Exception("It is not possible to create a user when initializing the project.");
+
+        var resultCreateUserRole = await userManager.AddToRoleAsync(user, AppRoles.Admin);
+        if (!resultCreateUserRole.Succeeded)
+            throw new Exception("It is not possible to add a role to a user during project initialization.");       
     }
 
     /// <summary>

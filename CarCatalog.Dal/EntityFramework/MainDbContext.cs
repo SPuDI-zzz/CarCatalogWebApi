@@ -1,9 +1,9 @@
-﻿using CarCatalog.Entities;
+﻿using CarCatalog.Dal.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace CarCatalog.EntityFramework;
+namespace CarCatalog.Dal.EntityFramework;
 
 /// <summary>
 ///     Represents the main database context for the application, extending IdentityDbContext for user and role management.
@@ -14,7 +14,6 @@ public class MainDbContext : IdentityDbContext<User, UserRole, long, IdentityUse
     ///     Gets or sets the DbSet for interacting with the <seealso cref="Car"/> entity in the database.
     /// </summary>
     public DbSet<Car> Cars { get; set; }
-
     /// <summary>
     /// Initializes a new instance of the MainDbContext class with the specified options.
     /// </summary>

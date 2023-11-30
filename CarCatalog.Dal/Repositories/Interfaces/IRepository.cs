@@ -1,4 +1,4 @@
-﻿namespace CarCatalog.Repositories.Interfaces;
+﻿namespace CarCatalog.Dal.Repositories.Interfaces;
 
 /// <summary>
 /// Represents a generic repository interface for CRUD operations on entities of type <typeparamref name="T"/>.

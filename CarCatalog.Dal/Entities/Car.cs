@@ -1,6 +1,6 @@
-﻿using CarCatalog.Entities.Common;
+﻿using CarCatalog.Dal.Entities.Common;
 
-namespace CarCatalog.Entities;
+namespace CarCatalog.Dal.Entities;
 
 /// <summary>
 ///     Represents a car entity in the application data model, inheriting from <see cref="BaseEntity"/>.

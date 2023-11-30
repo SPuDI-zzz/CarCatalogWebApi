@@ -1,9 +1,9 @@
-﻿using CarCatalog.Entities;
-using CarCatalog.EntityFramework;
-using CarCatalog.Repositories.Interfaces;
+﻿using CarCatalog.Dal.Entities;
+using CarCatalog.Dal.EntityFramework;
+using CarCatalog.Dal.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace CarCatalog.Repositories.CarRepository;
+namespace CarCatalog.Dal.Repositories.CarRepository;
 
 /// <summary>
 ///     Represents a repository for performing CRUD operations on entities of type <see cref="Car"/>.

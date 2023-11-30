@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
+﻿namespace CarCatalog.Dal.EntityFramework.Factories;
 
-namespace CarCatalog.EntityFramework.Factories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 /// <summary>
 ///     Factory class for creating instances of the <see cref="MainDbContext"/> during design-time operations.

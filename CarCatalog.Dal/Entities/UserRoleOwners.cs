@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace CarCatalog.Entities;
+namespace CarCatalog.Dal.Entities;
 
 /// <summary>
 ///     Represents the association between a user and a role in the application data model,
