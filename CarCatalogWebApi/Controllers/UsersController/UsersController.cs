@@ -1,14 +1,16 @@
 ﻿using AutoMapper;
-using CarCatalog.Api.Controllers.Cars.Models;
 using CarCatalog.Api.Controllers.UsersController.Models;
 using CarCatalog.Bil.Services.UserService;
 using CarCatalog.Bil.Services.UserService.Models;
+using CarCatalog.Shared.Const;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarCatalog.Api.Controllers.UsersController;
 
 [ApiController]
 [Route("api/users")]
+[Authorize(Policy = AppRoles.Admin)]
 public class UsersController : ControllerBase
 {
     private readonly IMapper _mapper;

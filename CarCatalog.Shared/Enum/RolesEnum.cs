@@ -8,15 +8,15 @@ public enum RolesEnum
     /// <summary>
     ///     Represents a regular user role with the ability to look at car data.
     /// </summary>
-    User,
+    User = 1,
 
     /// <summary>
     ///     Represents a manager role with the ability to manage car data.
     /// </summary>
-    Manager,
+    Manager = 2,
 
     /// <summary>
     ///     Represents an administrator role with full system access.
     /// </summary>
-    Admin
+    Admin = 3
 }

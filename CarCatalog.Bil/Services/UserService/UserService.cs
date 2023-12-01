@@ -31,6 +31,8 @@ public class UserService : IUserSevice
     {
         var user = _mapper.Map<User>(model);
 
+        using var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
         var resultCreateUser = await _userManager.CreateAsync(user, model.Password);
         if (!resultCreateUser.Succeeded)
             return new()
@@ -39,7 +41,7 @@ public class UserService : IUserSevice
                 ErrorMessages = resultCreateUser.Errors
             };
 
-        var resultAddRolesToUser = await _userManager.AddToRolesAsync(user, model.Roles.Append("das"));
+        var resultAddRolesToUser = await _userManager.AddToRolesAsync(user, model.Roles);
         if (!resultAddRolesToUser.Succeeded)
             return new()
             {
@@ -47,7 +49,8 @@ public class UserService : IUserSevice
                 ErrorMessages = resultAddRolesToUser.Errors
             };
         
-        return new();
+        transactionScope.Complete();
+        return new();       
     }
 
     /// <inheritdoc/>
@@ -111,6 +114,8 @@ public class UserService : IUserSevice
 
         user = _mapper.Map(model, user);
 
+        using var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
         var resultUpdateUser = await _userManager.UpdateAsync(user);
         if (!resultUpdateUser.Succeeded)
             return new()
@@ -122,7 +127,10 @@ public class UserService : IUserSevice
         var roles = await _userManager.GetRolesAsync(user);
 
         if (roles.SequenceEqual(model.Roles))
+        {
+            transactionScope.Complete();
             return new();
+        }
 
         var resultRevoveRoleFromUser = await _userManager.RemoveFromRolesAsync(user, roles);
         if (!resultRevoveRoleFromUser.Succeeded)
@@ -140,6 +148,7 @@ public class UserService : IUserSevice
                 ErrorMessages = resultAddRoleToUser.Errors
             };
 
+        transactionScope.Complete();
         return new();
     }
 }

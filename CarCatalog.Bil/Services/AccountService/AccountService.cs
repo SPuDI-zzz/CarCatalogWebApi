@@ -3,6 +3,7 @@ using CarCatalog.Bil.Services.AccountService.Models;
 using CarCatalog.Dal.Entities;
 using CarCatalog.Shared.Const;
 using Microsoft.AspNetCore.Identity;
+using System.Transactions;
 
 namespace CarCatalog.Bil.Services.AccountService;
 
@@ -32,6 +33,8 @@ public class AccountService : IAccountService
     {
         var user = _mapper.Map<User>(model);
 
+        using var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
         var resultCreateUser = await _userManager.CreateAsync(user, model.Password);
         if (!resultCreateUser.Succeeded)
             return new()
@@ -48,6 +51,7 @@ public class AccountService : IAccountService
                 ErrorMessages = resultAddRoleToUser.Errors
             };
 
+        transactionScope.Complete();
         return new();
     }
 }
