@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace CarCatalog.Bil.Services.AccountService.Models;
 
@@ -18,5 +19,5 @@ public class RegisterUserAccountResponseModel
     /// <remarks>
     ///     This property is populated with details about the encountered errors when <see cref="IsError"/> is true.
     /// </remarks>
-    public IEnumerable<IdentityError> ErrorMessages { get; set; } = default!;
+    public IEnumerable<IdentityError>? ErrorMessages { get; set; } = default;
 }

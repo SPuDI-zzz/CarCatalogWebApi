@@ -3,6 +3,7 @@ using CarCatalog.Bil.Services.UserService.Models;
 using CarCatalog.Dal.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Transactions;
 
 namespace CarCatalog.Bil.Services.UserService;
 
@@ -26,20 +27,26 @@ public class UserService : IUserSevice
     }
 
     /// <inheritdoc/>
-    public async Task<AddUserAccountResponseModel> AddUserAsync(AddUserModel model)
+    public async Task<AddUserResponseModel> AddUserAsync(AddUserModel model)
     {
         var user = _mapper.Map<User>(model);
 
         var resultCreateUser = await _userManager.CreateAsync(user, model.Password);
         if (!resultCreateUser.Succeeded)
-            return new AddUserAccountResponseModel
+            return new()
             {
                 IsError = true,
-                ErrorMessage = $"Creating user account is wrong" +
-                    $"{string.Join(", ", resultCreateUser.Errors.Select(e => e.Description))}"
+                ErrorMessages = resultCreateUser.Errors
             };
 
-        await _userManager.AddToRolesAsync(user, model.Roles);
+        var resultAddRolesToUser = await _userManager.AddToRolesAsync(user, model.Roles.Append("das"));
+        if (!resultAddRolesToUser.Succeeded)
+            return new()
+            {
+                IsError = true,
+                ErrorMessages = resultAddRolesToUser.Errors
+            };
+        
         return new();
     }
 
@@ -50,7 +57,10 @@ public class UserService : IUserSevice
         if (user == null)
             return false;
 
-        await _userManager.DeleteAsync(user);
+        var result =  await _userManager.DeleteAsync(user);
+        if (!result.Succeeded)
+            return false;
+
         return true;
     }
 
@@ -89,34 +99,47 @@ public class UserService : IUserSevice
     }
 
     /// <inheritdoc/>
-    public async Task<UpdateUserAccountResponseModel> UpdateUserAsync(long userId, UpdateUserModel model)
+    public async Task<UpdateUserResponseModel> UpdateUserAsync(long userId, UpdateUserModel model)
     {
         var user = await _userManager.Users.FirstOrDefaultAsync(user => user.Id.Equals(userId));
         if (user == null)
-            return new UpdateUserAccountResponseModel
+            return new()
             {
                 IsError = true,
-                ErrorMessage = $"The user (id: {userId}) was not found"
+                IsNotFoundError = true
             };
 
         user = _mapper.Map(model, user);
 
         var resultUpdateUser = await _userManager.UpdateAsync(user);
         if (!resultUpdateUser.Succeeded)
-            return new UpdateUserAccountResponseModel
+            return new()
             {
                 IsError = true,
-                ErrorMessage = $"Updating user account is wrong" +
-                    $"{string.Join(", ", resultUpdateUser.Errors.Select(e => e.Description))}"
+                ErrorMessages = resultUpdateUser.Errors
             };
 
         var roles = await _userManager.GetRolesAsync(user);
 
-        if (!roles.SequenceEqual(model.Roles))
-        {
-            await _userManager.RemoveFromRolesAsync(user, roles);
-            await _userManager.AddToRolesAsync(user, model.Roles);
-        }
+        if (roles.SequenceEqual(model.Roles))
+            return new();
+
+        var resultRevoveRoleFromUser = await _userManager.RemoveFromRolesAsync(user, roles);
+        if (!resultRevoveRoleFromUser.Succeeded)
+            return new()
+            {
+                IsError = true,
+                ErrorMessages = resultRevoveRoleFromUser.Errors
+            };
+
+        var resultAddRoleToUser = await _userManager.AddToRolesAsync(user, model.Roles);
+        if (!resultAddRoleToUser.Succeeded)
+            return new() 
+            {
+                IsError = true,
+                ErrorMessages = resultAddRoleToUser.Errors
+            };
+
         return new();
     }
 }

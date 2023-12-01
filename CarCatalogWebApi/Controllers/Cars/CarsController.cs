@@ -49,9 +49,9 @@ public class CarsController : ControllerBase
     [HttpPost("")]
     public async Task<IActionResult> CreateCar([FromBody] AddCarRequest request)
     {
-        var model = _mapper.Map<AddCarModel>(request);
+        var carModel = _mapper.Map<AddCarModel>(request);
 
-        await _carService.AddCarAsync(model);
+        await _carService.AddCarAsync(carModel);
 
         return Ok();
     }
