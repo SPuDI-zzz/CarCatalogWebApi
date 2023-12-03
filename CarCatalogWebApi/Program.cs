@@ -1,10 +1,7 @@
 using CarCatalog.Api;
-using CarCatalog.Api.Middlewares;
-using CarCatalog.Dal.Entities;
+using CarCatalog.Api.Configurations;
 using CarCatalog.Dal.EntityFramework;
 using CarCatalog.Dal.EntityFramework.Setup;
-using CarCatalog.Shared.Const;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using NLog;
 using NLog.Web;
 
@@ -16,63 +13,20 @@ var logger = LogManager
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-    var services = builder.Services;
-    var configuration = builder.Configuration;
 
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
 
+    var services = builder.Services;
+    var configuration = builder.Configuration;
+
     services.AddControllers();
 
-    services.AddEndpointsApiExplorer();
-    services.AddSwaggerGen();
+    services.AddAppSwagger();
 
     services.AddAppDbContext(configuration);
 
-    services.AddIdentity<User, UserRole>()
-        .AddEntityFrameworkStores<MainDbContext>();
-
-    services.AddAuthentication();
-
-    services.AddAuthorization(options =>
-    {
-        options.AddPolicy(AppRoles.User, policy => policy
-            .RequireAuthenticatedUser()
-            .RequireRole(AppRoles.User, AppRoles.Manager, AppRoles.Admin));
-
-        options.AddPolicy(AppRoles.Manager, policy => policy
-            .RequireAuthenticatedUser()
-            .RequireRole(AppRoles.Manager, AppRoles.Admin));
-
-        options.AddPolicy(AppRoles.Admin, policy => policy
-            .RequireAuthenticatedUser()
-            .RequireRole(AppRoles.Admin));
-    });
-
-    services.ConfigureApplicationCookie(options =>
-    {
-        options.Events = new CookieAuthenticationEvents()
-        {
-            OnRedirectToLogin = (context) =>
-            {
-                if (context.Request.Path.StartsWithSegments("/api"))
-                {
-                    context.Response.StatusCode = 401;
-                }
-
-                return Task.CompletedTask;
-            },
-            OnRedirectToAccessDenied = (context) =>
-            {
-                if (context.Request.Path.StartsWithSegments("/api"))
-                {
-                    context.Response.StatusCode = 403;
-                }
-
-                return Task.CompletedTask;
-            }
-        };
-    });
+    services.AddAppAuth();
 
     services.RegisterAppServices();
 
@@ -80,18 +34,11 @@ try
 
     var app = builder.Build();
 
-    app.UseMiddleware<ExceptionsMiddleware>();
-    app.UseMiddleware<RequestLogResourceMiddleware>();
+    app.UseAppMiddlewares();
 
-    // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-    }
+    app.UseAppSwagger();
 
-    app.UseAuthentication();
-    app.UseAuthorization();
+    app.UseAppAuth();
 
     app.MapControllers();
 
