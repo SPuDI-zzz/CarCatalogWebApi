@@ -4,6 +4,7 @@ using CarCatalog.Dal.Entities;
 using CarCatalog.Dal.EntityFramework;
 using CarCatalog.Dal.EntityFramework.Setup;
 using CarCatalog.Shared.Const;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using NLog;
 using NLog.Web;
 
@@ -46,6 +47,31 @@ try
         options.AddPolicy(AppRoles.Admin, policy => policy
             .RequireAuthenticatedUser()
             .RequireRole(AppRoles.Admin));
+    });
+
+    services.ConfigureApplicationCookie(options =>
+    {
+        options.Events = new CookieAuthenticationEvents()
+        {
+            OnRedirectToLogin = (context) =>
+            {
+                if (context.Request.Path.StartsWithSegments("/api"))
+                {
+                    context.Response.StatusCode = 401;
+                }
+
+                return Task.CompletedTask;
+            },
+            OnRedirectToAccessDenied = (context) =>
+            {
+                if (context.Request.Path.StartsWithSegments("/api"))
+                {
+                    context.Response.StatusCode = 403;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
 
     services.RegisterAppServices();

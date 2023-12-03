@@ -47,7 +47,7 @@ public class AccountController : ControllerBase
 
         var responseModel = await _accountService.RegisterAsync(userAccountModel);
         if (!responseModel.IsError)
-            Ok();
+            return Ok();
 
         var response = _mapper.Map<RegisterUserAccountErrorResponse>(responseModel);
         return BadRequest(response);
