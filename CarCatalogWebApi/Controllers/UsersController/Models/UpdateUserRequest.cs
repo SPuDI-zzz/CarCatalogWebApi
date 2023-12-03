@@ -4,6 +4,9 @@ using CarCatalog.Shared.Enum;
 
 namespace CarCatalog.Api.Controllers.UsersController.Models;
 
+/// <summary>
+///     Represents a request to update an existing user.
+/// </summary>
 public class UpdateUserRequest
 {
     /// <summary>
@@ -19,8 +22,14 @@ public class UpdateUserRequest
     public required IEnumerable<RolesEnum> Roles { get; set; }
 }
 
+/// <summary>
+///     AutoMapper profile for mapping <see cref="UpdateUserRequest"/> entities to <see cref="UpdateUserModel"/> objects.
+/// </summary>
 public class UpdateUserRequestProfile : Profile
 {
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="UpdateUserRequestProfile"/> class.
+    /// </summary>
     public UpdateUserRequestProfile()
     {
         CreateMap<UpdateUserRequest, UpdateUserModel>()

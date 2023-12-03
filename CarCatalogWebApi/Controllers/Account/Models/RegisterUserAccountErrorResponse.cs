@@ -4,8 +4,14 @@ using Microsoft.AspNetCore.Identity;
 
 namespace CarCatalog.Api.Controllers.Account.Models;
 
+/// <summary>
+///     Represents an error response when attempting to register a user account.
+/// </summary>
 public class RegisterUserAccountErrorResponse
 {
+    /// <summary>
+    ///     Gets or sets a collection of <see cref="IdentityError"/> representing errors that occurred during registration.
+    /// </summary>
     public IEnumerable<IdentityError>? Errors { get; set; }
 }
 

@@ -3,10 +3,21 @@ using CarCatalog.Bil.Services.AccountService.Models;
 
 namespace CarCatalog.Api.Controllers.Account.Models;
 
+/// <summary>
+///     Represents a request to register a user account.
+/// </summary>
 public class RegisterUserAccountRequest
 {
+    /// <summary>
+    ///     Gets or sets the desired username for the new user account.
+    /// </summary>
+    /// <remarks>This property is required.</remarks>
     public required string UserName { get; set; }
 
+    /// <summary>
+    ///     Gets or sets the desired password for the new user account.
+    /// </summary>
+    /// <remarks>This property is required.</remarks>
     public required string Password { get; set; }
 }
 

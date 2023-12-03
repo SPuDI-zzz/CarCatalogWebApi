@@ -1,5 +1,5 @@
 using CarCatalog.Api;
-using CarCatalog.Api.Filters;
+using CarCatalog.Api.Middlewares;
 using CarCatalog.Dal.Entities;
 using CarCatalog.Dal.EntityFramework;
 using CarCatalog.Dal.EntityFramework.Setup;
@@ -21,10 +21,7 @@ try
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
 
-    services.AddControllers(options => 
-    {
-        options.Filters.Add<RequestLogResourceFilter>();
-    });
+    services.AddControllers();
 
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
@@ -39,12 +36,15 @@ try
     services.AddAuthorization(options =>
     {
         options.AddPolicy(AppRoles.User, policy => policy
+            .RequireAuthenticatedUser()
             .RequireRole(AppRoles.User, AppRoles.Manager, AppRoles.Admin));
 
         options.AddPolicy(AppRoles.Manager, policy => policy
+            .RequireAuthenticatedUser()
             .RequireRole(AppRoles.Manager, AppRoles.Admin));
 
         options.AddPolicy(AppRoles.Admin, policy => policy
+            .RequireAuthenticatedUser()
             .RequireRole(AppRoles.Admin));
     });
 
@@ -53,6 +53,9 @@ try
     services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
     var app = builder.Build();
+
+    app.UseMiddleware<ExceptionsMiddleware>();
+    app.UseMiddleware<RequestLogResourceMiddleware>();
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
@@ -73,7 +76,7 @@ try
 }
 catch (Exception ex)
 {
-    logger.Error(ex);
+    logger.Error(ex, "Stopped program because of exception");
 }
 finally
 {
