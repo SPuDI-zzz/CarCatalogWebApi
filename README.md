@@ -8,7 +8,7 @@
 - After write `docker-compose up`
 - Open API in browser http://localhost:10000/swagger/index.html
 
-## Start with Visual Studio
+## You can start with Visual Studio
 
 Add postgres to Docker if you don't have one
 ```powershell
