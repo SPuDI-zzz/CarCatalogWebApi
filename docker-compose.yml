@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  carcatalog.postgres:
+    image: postgres:latest
+
+  carcatalog.api:
+    image: ${DOCKER_REGISTRY-}carcatalogapi
+    build:
+      context: .
+      dockerfile: CarCatalogWebApi/Dockerfile
+    depends_on:
+      - carcatalog.postgres

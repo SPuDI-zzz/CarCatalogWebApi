@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarCatalog.Bil", "CarCatalo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarCatalog.Shared", "CarCatalog.Shared\CarCatalog.Shared.csproj", "{DE82B26B-77F3-4CF3-B8AF-D2BEE88F3BA2}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{66C2D35D-EE59-4D1D-A2D3-BA0173D258D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{DE82B26B-77F3-4CF3-B8AF-D2BEE88F3BA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE82B26B-77F3-4CF3-B8AF-D2BEE88F3BA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE82B26B-77F3-4CF3-B8AF-D2BEE88F3BA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66C2D35D-EE59-4D1D-A2D3-BA0173D258D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66C2D35D-EE59-4D1D-A2D3-BA0173D258D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66C2D35D-EE59-4D1D-A2D3-BA0173D258D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66C2D35D-EE59-4D1D-A2D3-BA0173D258D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

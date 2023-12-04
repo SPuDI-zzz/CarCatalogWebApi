@@ -8,8 +8,8 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["CarCatalog.Api.csproj", "CarCatalogWebApi/"]
-COPY ["../CarCatalog.Bil/CarCatalog.Bil.csproj", "CarCatalog.Bil/"]
+COPY ["CarCatalogWebApi/CarCatalog.Api.csproj", "CarCatalogWebApi/"]
+COPY ["CarCatalog.Bil/CarCatalog.Bil.csproj", "CarCatalog.Bil/"]
 COPY ["CarCatalog.Dal/CarCatalog.Dal.csproj", "CarCatalog.Dal/"]
 COPY ["CarCatalog.Shared/CarCatalog.Shared.csproj", "CarCatalog.Shared/"]
 RUN dotnet restore "./CarCatalogWebApi/./CarCatalog.Api.csproj"
