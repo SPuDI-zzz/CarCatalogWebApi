@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarCatalog.Dal", "CarCatalo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarCatalog.Bil", "CarCatalog.Bil\CarCatalog.Bil.csproj", "{39DDEE08-293D-454D-B13E-6AAC48764695}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarCatalog.Shared", "CarCatalog.Shared\CarCatalog.Shared.csproj", "{DE82B26B-77F3-4CF3-B8AF-D2BEE88F3BA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarCatalog.Shared", "CarCatalog.Shared\CarCatalog.Shared.csproj", "{DE82B26B-77F3-4CF3-B8AF-D2BEE88F3BA2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

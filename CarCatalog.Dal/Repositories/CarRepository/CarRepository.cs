@@ -41,10 +41,10 @@ public class CarRepository : IRepository<Car>
 
         var car = await context.Cars.FirstOrDefaultAsync(car => car.Id.Equals(id));
 
-        if (car != null)
+        if (car == null)
             return false;
 
-        context.Remove(car);
+        context.Cars.Remove(car);
         await context.SaveChangesAsync();
         return true;
     }
