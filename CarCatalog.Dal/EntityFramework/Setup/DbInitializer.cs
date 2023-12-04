@@ -18,13 +18,14 @@ public static class DbInitializer
     ///     a scoped service scope. The <see cref="MainDbContext"/> is then used to apply any pending migrations
     ///     to the database using the <see cref="DbContext.Database.Migrate"/> method.
     /// </remarks>
-    public static void Execute(IServiceProvider serviceProvider)
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    public static async Task Execute(IServiceProvider serviceProvider)
     {
         using var scope = serviceProvider.GetService<IServiceScopeFactory>()?.CreateScope();
         ArgumentNullException.ThrowIfNull(scope);
 
         var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<MainDbContext>>();
-        using var context = dbContextFactory.CreateDbContext();
-        context.Database.Migrate();
+        await using var context = await dbContextFactory.CreateDbContextAsync();
+        await context.Database.MigrateAsync();
     }
 }

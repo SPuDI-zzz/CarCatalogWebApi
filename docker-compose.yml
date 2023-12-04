@@ -8,6 +8,6 @@ services:
     image: ${DOCKER_REGISTRY-}carcatalogapi
     build:
       context: .
-      dockerfile: CarCatalogWebApi/Dockerfile
+      dockerfile: CarCatalog.Api/Dockerfile
     depends_on:
       - carcatalog.postgres

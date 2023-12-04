@@ -1,6 +1,0 @@
-@CarCatalog.Api_HostAddress = http://localhost:5012
-
-GET {{CarCatalog.Api_HostAddress}}/api/cars/
-Accept: application/json
-
-###
