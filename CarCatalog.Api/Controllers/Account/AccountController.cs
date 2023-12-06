@@ -3,8 +3,11 @@ using CarCatalog.Api.Controllers.Account.Models;
 using CarCatalog.Bll.Services.AccountService;
 using CarCatalog.Bll.Services.AccountService.Models;
 using CarCatalog.Dal.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Security.Claims;
 
 namespace CarCatalog.Api.Controllers.Account;
 
@@ -73,6 +76,38 @@ public class AccountController : ControllerBase
             return Unauthorized();
 
         return Ok();
+    }
+
+    /// <summary>
+    ///     Gets the roles associated with the authenticated user.
+    /// </summary>
+    /// <returns>
+    ///     If the request is authorized and the user is found, returns an HTTP 200 OK response with the user roles.
+    ///     If the request is authorized but the authenticated user is not found, returns an HTTP 401 Unauthorized response.
+    ///     If the request is not authorized, returns an HTTP 401 Unauthorized response.
+    /// </returns>
+    [HttpGet("myRoles")]
+    [Authorize]
+    public IEnumerable<string> GetUserRoles()
+    {
+        var userRoles = User.FindAll(ClaimsIdentity.DefaultRoleClaimType).Select(claim => claim.Value);
+        return userRoles;
+    }
+
+    /// <summary>
+    ///     Checks if the authenticated user is in the specified role.
+    /// </summary>
+    /// <param name="userRole">The role to check for the authenticated user.</param>
+    /// <returns>
+    ///     If the request is authorized and the role check is successful, returns an HTTP 200 OK response with a boolean value.
+    ///     If the request is authorized but the specified role does not exist, returns an HTTP 404 Not Found response.
+    ///     If the request is not authorized, returns an HTTP 401 Unauthorized response.
+    /// </returns>
+    [HttpGet("isInRole")]
+    [Authorize]
+    public bool UserIsInRole([FromQuery] string userRole)
+    {
+        return User.IsInRole(userRole);
     }
 
     /// <summary>
