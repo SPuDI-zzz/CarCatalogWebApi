@@ -34,6 +34,8 @@ try
 
     var app = builder.Build();
 
+    app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+
     app.UseAppMiddlewares();
 
     app.UseAppSwagger();
