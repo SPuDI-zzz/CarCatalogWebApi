@@ -10,7 +10,13 @@ class Products {
                     <p>${car.mark}</p>
                     <p>${car.model}</p>
                     <p>${car.color}</p>
-                    <button class="products-element__btn">Добавить в корзину</button>
+                    <div class="products-element_button-container">
+                        <button class="products-element__btn">Добавить в корзину</button>
+                        <div class="products-element_operations">
+                            <button class="products-element_operations__btn">Edit</button>
+                            <button class="products-element_operations__btn">Delete</button>
+                        </div>
+                    </div>
                 </div>
             `;
         });
@@ -35,5 +41,6 @@ class Products {
     
 }
 
+window.location.replace("components/Account/Account.html")
 const productsPage = new Products();
 productsPage.render();

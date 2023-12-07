@@ -23,3 +23,49 @@
     height: auto;
     object-fit: contain;
 }
+
+.products-element_operations {
+    display: flex;
+}
+
+.products-element__btn_active {
+    background-color: greenyellow;
+}
+
+.products-element__btn_active:hover {
+    background-color: white;
+    color: black;
+    
+}
+
+.products-element_operations__btn {
+    margin-left: 10px;
+}
+
+.products-element_button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+button {
+    background-color: rgb(233, 230, 230);
+    color: black;
+    border: 1px solid #555555;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+}
+
+button:hover {
+    background-color: #555555;
+    color: white;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
