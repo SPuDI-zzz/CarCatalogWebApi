@@ -83,7 +83,6 @@ public class AccountController : ControllerBase
     /// </summary>
     /// <returns>
     ///     If the request is authorized and the user is found, returns an HTTP 200 OK response with the user roles.
-    ///     If the request is authorized but the authenticated user is not found, returns an HTTP 401 Unauthorized response.
     ///     If the request is not authorized, returns an HTTP 401 Unauthorized response.
     /// </returns>
     [HttpGet("myRoles")]
@@ -100,7 +99,6 @@ public class AccountController : ControllerBase
     /// <param name="userRole">The role to check for the authenticated user.</param>
     /// <returns>
     ///     If the request is authorized and the role check is successful, returns an HTTP 200 OK response with a boolean value.
-    ///     If the request is authorized but the specified role does not exist, returns an HTTP 404 Not Found response.
     ///     If the request is not authorized, returns an HTTP 401 Unauthorized response.
     /// </returns>
     [HttpGet("isInRole")]
