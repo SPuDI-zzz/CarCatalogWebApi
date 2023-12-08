@@ -59,8 +59,6 @@ public class CarsController : ControllerBase
     ///     If the request is not authorized, returns an HTTP 401 Unauthorized response.
     /// </returns>
     [Authorize(Policy = AppRoles.User)]
-    // TODO: Remove after
-    [AllowAnonymous]
     [HttpGet("")]
     public async Task<IEnumerable<CarResponse>> GetAllCars()
     {
