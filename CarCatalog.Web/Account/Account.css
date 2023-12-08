@@ -94,3 +94,9 @@ input {
     background: #eaeaee;
     color: #555;
 }
+
+.error {
+    font-size: 14px;
+    font-weight: bold;
+    color: red;
+}

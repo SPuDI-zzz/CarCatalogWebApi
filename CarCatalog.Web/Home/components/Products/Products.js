@@ -30,17 +30,19 @@ class Products {
         ROOT_PRODUCTS.innerHTML = htlm;
     }
 
-    render() {
-        
-
-        fetch('http://localhost:5012/api/cars')
-        .then(data => data.json())
-        .then(response => this.displayCars(response));
+    async render() {
+        fetch(`${API_URL}/cars`,{
+            credentials: 'include'
+        })
+        .then(response => { 
+            if (response.status === 401 || response.status === 403)
+                window.location.replace("http://127.0.0.1:5500/Account")
+            return response.json() })
+        .then(response => this.displayCars(response))
     }
 
     
 }
 
-window.location.replace("components/Account/Account.html")
 const productsPage = new Products();
 productsPage.render();

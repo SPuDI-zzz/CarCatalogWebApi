@@ -10,25 +10,27 @@
     <div class="container">
         <div class="form-box">
             <h1 id="title">Sign Up</h1>
+            <p class="error" id="error"></p>
             <form>
                 <div class="input-group">
                     <div class="input-field">
-                        <input type="text" placeholder="Login">
+                        <input type="text" id="loginInput" placeholder="Login">
                     </div>
                     <div class="input-field">
-                        <input type="text" placeholder="Password">
+                        <input type="password" id="passwordInput" placeholder="Password">
                     </div>
                     <div class="input-field" id="confirmPassword">
-                        <input type="text" placeholder="Confirm password">
+                        <input id="confirmPasswordInput" type="password" placeholder="Confirm password">
                     </div>
                 </div>
                 <div class="btn-field">
                     <button type="button" id="signupBtn">Sign up</button>
-                    <button type="button" id="signinBtn" class="disable">Sign in</button>
+                    <button id="signinBtn" class="disable">Sign in</button>
                 </div>
             </form>
         </div>
     </div>
     <script src="Account.js"></script>
+    <script src="../Home/constants/catalog.js"></script>
 </body>
 </html>
