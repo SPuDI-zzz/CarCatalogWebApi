@@ -60,6 +60,7 @@ public static class AuthConfiguration
                     return Task.CompletedTask;
                 }
             };
+            options.Cookie.SameSite = SameSiteMode.None;
         });
 
         return services;
@@ -72,6 +73,12 @@ public static class AuthConfiguration
     /// <returns>The modified <see cref="IApplicationBuilder"/> configured for using authentication.</returns>
     public static IApplicationBuilder UseAppAuth(this IApplicationBuilder app)
     {
+        app.UseCookiePolicy(
+            new CookiePolicyOptions
+            {
+                Secure = CookieSecurePolicy.Always
+            });
+
         app.UseAuthentication();
 
         app.UseAuthorization();
