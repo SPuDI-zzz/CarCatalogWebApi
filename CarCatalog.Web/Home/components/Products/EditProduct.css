@@ -1,0 +1,48 @@
+.edit-product-container {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 55%;
+	height: 25vh;
+	margin: auto;
+	padding: var(--spacing-large);
+	transform: translate(-50%, -50%);
+	background-color: var(--color-white);
+	box-shadow: var(--box-shadow);
+}
+
+.edit-product__close {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	width: 35px;
+	height: 35px;
+	background-image: url(/Home/img/close.svg);
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: contain;
+	cursor: pointer;
+}
+
+.edit-product-element-field {
+    background: #eaeaee;
+    margin: 15px 0;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    max-width: 330px;
+    transition: max-width 0.25s;
+    overflow: hidden;
+}
+
+.form-container input {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    padding: 18px 15px;
+}
+
+.edit-product-element__btn {
+    cursor: pointer;
+}

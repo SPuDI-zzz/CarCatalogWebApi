@@ -1,0 +1,50 @@
+.header-container {
+    display: flex;
+    height: 50px;
+    padding: var(--spacing-small);
+    background-color: var(--color-medium);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+.nav__link {
+    text-decoration: none;
+    color: #000000;
+    font-weight: 500;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+.nav__link-icon {
+    margin-left: auto;
+}
+
+.nav__link-icon-svg {
+    width: 20px;
+    height: 30px;
+}
+
+.header__basket {
+    position: relative;
+    margin-right: 9px;
+}
+
+.nav__link_circle {
+    display: inline-block;
+    text-align: center;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 18px;
+    text-align: center;
+    color: #ffffff;
+    position: absolute;
+    top: -3px;
+    left: 60%;
+    min-width: 17.4px;
+    height: 17.4px;
+    background: #a7a6a6;
+    border-radius: 17.4px;
+    padding: 0 3.7px;
+}

@@ -11,6 +11,7 @@ signInBtn.onclick = signInClick;
 signUpBtn.onclick = signUpClick;
 
 async function signIn(login, password) {
+    debugger;
     const body = {
         userName: login,
         password: password
@@ -28,7 +29,7 @@ async function signIn(login, password) {
     return response.status === 200;
 }
 
-async function signUp(login, password) {
+async function signUp(login, password) {    
     const body = {
         userName: login,
         password: password
@@ -39,7 +40,6 @@ async function signUp(login, password) {
         body: JSON.stringify(body),
         headers: {
             "content-type": "application/json",
-            "Accept": "*/*"
         },
         credentials: 'include'
     });
@@ -60,8 +60,8 @@ async function signUpClick() {
         errorInput.innerHTML = errorMessage;
         return;
     }
-
-    if (validatePasswords(passwordInput.value, confirmPasswordInput.value)) {
+    
+    if (!validatePasswords(passwordInput.value, confirmPasswordInput.value)) {
         let errorMessage = "Please make sure your passwords match";
         errorInput.innerHTML = errorMessage;
         return;
@@ -80,6 +80,7 @@ async function signUpClick() {
 }
 
 async function signInClick() {
+    debugger;
     errorInput.innerHTML = "";
     const isContainsDisable = signInBtn.className.includes("disable");
     if (isContainsDisable) {
@@ -102,12 +103,10 @@ function changeStylesForButtons(firstBtn, secondBtn, widthConfirmPassword, title
     title.innerHTML = titleMessage
     firstBtn.classList.add("disable");
     secondBtn.classList.remove("disable");
-    firstBtn.removeAttribute('button');
-    secondBtn.setAttribute('type', 'button');
 }
 
 function validatePasswords(password, confirmPassword) {
-    if (password || confirmPassword)
+    if (!password || !confirmPassword)
         return false;
 
     if (password !== confirmPassword)
