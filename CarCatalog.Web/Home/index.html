@@ -9,13 +9,15 @@
 <body>
     <div id="header"></div>
     <div id="products"></div>
-    <div id="shopping"></div>
+    <div id="addProduct"></div>
     <div id="editProduct"></div>
+    <div id="shopping"></div>
     
     <!-- Constants and Utils -->
     <script src="/Home/constants/const.js"></script>
     <script src="/Home/constants/root.js"></script>
-    <script src="/Home/utils/localStorageUtil.js"></script>
+    <script src="/Home/utils/localStorageUserUtil.js"></script>
+    <script src="/Home/utils/localStorageProductUtil.js"></script>
 
     <!-- Header -->
     <script src="/Home/components/Header/Header.js"></script>
@@ -24,12 +26,17 @@
     <!-- Products -->
     <script src="components/Products/Products.js"></script>
     <link rel="stylesheet" href="components/Products/Products.css">
+    <script src="/Home/components/Products/AddProduct.js"></script>
+    <link rel="stylesheet" href="/Home/components/Products/AddProduct.css">
+    <script src="/Home/components/Products/EditProduct.js"></script>
+    <link rel="stylesheet" href="/Home/components/Products/EditProduct.css">
+    <script src="/Home/components/Users/Users.js"></script>
+    <link rel="stylesheet" href="/Home/components/Users/Users.css">
+    <script src="/Home/components/Users/AddUser.js"></script>
+    <script src="/Home/components/Users/EditUser.js"></script>
 
     <!-- Shopping -->
     <script src="/Home/components/Shopping/Shopping.js"></script>
     <link rel="stylesheet" href="/Home/components/Shopping/Shopping.css">
-    
-    <script src="/Home/components/Products/EditProduct.js"></script>
-    <link rel="stylesheet" href="/Home/components/Products/EditProduct.css">
 </body>
 </html>

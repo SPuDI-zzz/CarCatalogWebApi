@@ -1,7 +1,14 @@
+#products {
+    margin-top: 80px;
+}
+
+.products_filter {
+    margin: 0 10%; 
+}
+
 .products_body-container {
     display: flex;
     flex-direction: column;
-    --width: 100%;
 }
 
 .products-container {
@@ -15,7 +22,7 @@
 }
 
 .products__btn-add {
-    margin: var(--spacing-header-height) auto 0px;
+    cursor: pointer;
 }
 
 .products-element {

@@ -1,7 +1,7 @@
-class LocalStorageUtil {
+class LocalStorageProductUtil {
     constructor() {
         this.count = 0;
-        this.keyName = 'products'
+        this.keyName = '';
     }
 
     getProducts() {
@@ -31,8 +31,21 @@ class LocalStorageUtil {
         
         localStorage.setItem(this.keyName, JSON.stringify(products));
         this.count = products.length;
+
         return isPushProducts;
+    }
+
+    removeIfContainsProduct(id) {
+        let products = this.getProducts();
+        const index = products.indexOf(id);
+
+        if (index === -1) 
+            return;
+        
+        products.splice(index, 1);
+        this.count = products.length;
+        localStorage.setItem(this.keyName, JSON.stringify(products));
     }
 }
 
-const localStorageUtil = new LocalStorageUtil();
+const localStorageProductUtil = new LocalStorageProductUtil();

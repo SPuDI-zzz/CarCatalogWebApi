@@ -1,5 +1,3 @@
-// import { ROOT_SHOPPING } from "../../constants/root.js"
-
 class Shopping {
 
     handlerClear() {
@@ -7,7 +5,7 @@ class Shopping {
     }
 
     displayCars(cars) {
-        const productsStore = localStorageUtil.getProducts();
+        const productsStore = localStorageProductUtil.getProducts();
         let allCars = '';
 
         cars.forEach(car => {
@@ -44,15 +42,16 @@ class Shopping {
     }
 
     render() {
-        fetch(`${API_URL}/cars`, {
+        fetch(`${API_URL_CARS}`, {
             method: "GET",
             credentials: 'include'
         })
         .then(response => { 
             if (response.status === 401 || response.status === 403)
-                window.location.replace("http://127.0.0.1:5500/Account")
-            return response.json() })
-        .then(response => this.displayCars(response))
+                window.location.replace(`${URL_ACCOUNT}`);
+            return response.json();
+        })
+        .then(response => this.displayCars(response));
     }
 }
 

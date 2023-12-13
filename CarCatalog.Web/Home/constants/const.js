@@ -1,2 +1,13 @@
-const IMAGE_URL = "img/car.avif";
+const IMAGE_CAR_URL = "img/car.jpg";
+const IMAGE_USER_URL = "img/user.jpg";
 const API_URL = "http://localhost:5012/api";
+const URL_HOME = "http://127.0.0.1:5500/Home";
+const URL_ACCOUNT = "http://127.0.0.1:5500/Account";
+const API_URL_ACCOUNT_ISADMIN = `${API_URL}/Account/isInRole?userRole=Admin`;
+const API_URL_ACCOUNT_CLAIMS = `${API_URL}/Account/myClaims`;
+const API_URL_ACCOUNT_LOGIN = `${API_URL}/Account/login`;
+const API_URL_ACCOUNT_REGISTER = `${API_URL}/Account/register`;
+const API_URL_ACCOUNT_LOGOUT = `${API_URL}/Account/logout`;
+const API_URL_CARS = `${API_URL}/Cars`;
+const API_URL_USERS = `${API_URL}/Users`;
+const ROLES = [['User', ''], ['Manager', ''], ['Admin', '']];

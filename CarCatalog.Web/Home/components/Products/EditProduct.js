@@ -13,7 +13,7 @@ class EditProduct {
             mark: carMarkInput.value,
             model: carModelInput.value,
             color: carColorInput.value,
-            userId: 1
+            userId: localStorageUserUtil.getNumberUserId()
         };
 
         await this.sendEditProduct(carId, body);
@@ -22,7 +22,7 @@ class EditProduct {
     }
 
     async sendEditProduct(id, body) {
-        await fetch(`${API_URL}/cars/${id}`, {
+        await fetch(`${API_URL_CARS}/${id}`, {
             method: "PUT",
             headers: {
                 "content-type": "application/json",
@@ -32,7 +32,7 @@ class EditProduct {
         })
         .then(response => { 
             if (response.status === 401 || response.status === 403)
-                window.location.replace("http://127.0.0.1:5500/Account");
+                window.location.replace(`${URL_ACCOUNT}`);
             if (response.status === 404)
                 alert("Такой машины нет");
             return response
@@ -44,13 +44,13 @@ class EditProduct {
             <div class="form-container">
                 <form>
                     <div class="edit-product-element-field">
-                        <input id="carMarkInput" type="text" placeholder="Марка" value="${car.mark}" />
+                        <input class="form-container-edit__input" id="carMarkInput" type="text" placeholder="Марка" value="${car.mark}" />
                     </div>
                     <div class="edit-product-element-field">
-                        <input id="carModelInput" type="text" placeholder="Модель" value="${car.model}" />
+                        <input class="form-container-edit__input" id="carModelInput" type="text" placeholder="Модель" value="${car.model}" />
                     </div>
-                    <div class="edit-product-element-field" id="confirmPassword">
-                        <input id="carColorInput" type="text" placeholder="Цвет" value="${car.color}" />
+                    <div class="edit-product-element-field">
+                        <input class="form-container-edit__input" id="carColorInput" type="text" placeholder="Цвет" value="${car.color}" />
                     </div>
                     <button class="edit-product-element__btn" onclick="editProductPage.handlerEditProduct(${car.id});" type="button">Изменить</button>
                 </form>
@@ -68,13 +68,13 @@ class EditProduct {
     }
 
     render(id) {
-        fetch(`${API_URL}/cars/${id}`, {
+        fetch(`${API_URL_CARS}/${id}`, {
             method: "GET",
             credentials: 'include'
         })
         .then(response => { 
             if (response.status === 401 || response.status === 403)
-                window.location.replace("http://127.0.0.1:5500/Account")
+                window.location.replace(URL_ACCOUNT)
             return response.json()
         })
         .then(response => this.displayCar(response));

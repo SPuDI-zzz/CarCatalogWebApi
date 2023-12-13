@@ -10,14 +10,23 @@ signInBtn.onclick = signInClick;
 
 signUpBtn.onclick = signUpClick;
 
+async function handlerLogout() {
+    await fetch(`${API_URL_ACCOUNT_LOGOUT}`, {
+        method: "GET",
+        headers: {
+            "content-type": "application/json",
+        },
+        credentials: 'include'
+    });
+}
+
 async function signIn(login, password) {
-    debugger;
     const body = {
         userName: login,
         password: password
     }
 
-    const response = await fetch(`${API_URL}/account/login`, {
+    const response = await fetch(`${API_URL_ACCOUNT_LOGIN}`, {
         method: "POST",
         body: JSON.stringify(body),
         headers: {
@@ -35,7 +44,7 @@ async function signUp(login, password) {
         password: password
     }
 
-    const response = await fetch(`${API_URL}/account/register`, {
+    const response = await fetch(`${API_URL_ACCOUNT_REGISTER}`, {
         method: "POST",
         body: JSON.stringify(body),
         headers: {
@@ -80,7 +89,6 @@ async function signUpClick() {
 }
 
 async function signInClick() {
-    debugger;
     errorInput.innerHTML = "";
     const isContainsDisable = signInBtn.className.includes("disable");
     if (isContainsDisable) {
@@ -91,7 +99,7 @@ async function signInClick() {
     const isSignIn = await signIn(loginInput.value, passwordInput.value);
 
     if (isSignIn) {
-        window.location.replace("http://127.0.0.1:5500/Home");            
+        window.location.replace(`${URL_HOME}`);            
         return;
     }
  
