@@ -54,7 +54,7 @@ public class CarRepository : IRepository<Car>
     {
         using var context = await _dbContextFactory.CreateDbContextAsync();
 
-        var cars = await context.Cars.ToListAsync();
+        var cars = await context.Cars.OrderBy(car => car.Mark).ToListAsync();
         return cars;
     }
 

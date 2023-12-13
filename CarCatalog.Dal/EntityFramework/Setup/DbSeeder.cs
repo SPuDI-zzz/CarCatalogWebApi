@@ -125,6 +125,7 @@ public static class DbSeeder
         {
             UserName = Login
         };
+
         using var userManager = UserManager(serviceProvider);
             
         var resultCreateUser = await userManager.CreateAsync(user, Password);

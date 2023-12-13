@@ -90,6 +90,7 @@ public class UserService : IUserSevice
         var data = await _userManager.Users
             .Include(user => user.UserRoles)
                 .ThenInclude(userRoles => userRoles.Role)
+            .OrderBy(car => car.UserName)
             .Select(user => new UserModel
             {
                 Id = user.Id,

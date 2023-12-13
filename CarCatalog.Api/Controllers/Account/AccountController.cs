@@ -3,6 +3,7 @@ using CarCatalog.Api.Controllers.Account.Models;
 using CarCatalog.Bll.Services.AccountService;
 using CarCatalog.Bll.Services.AccountService.Models;
 using CarCatalog.Dal.Entities;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -79,18 +80,26 @@ public class AccountController : ControllerBase
     }
 
     /// <summary>
-    ///     Gets the roles associated with the authenticated user.
+    ///     Gets the claims associated with the authenticated user.
     /// </summary>
     /// <returns>
-    ///     If the request is authorized and the user is found, returns an HTTP 200 OK response with the user roles.
+    ///     If the request is authorized and the user is found, returns an HTTP 200 OK response with the user claims.
     ///     If the request is not authorized, returns an HTTP 401 Unauthorized response.
     /// </returns>
-    [HttpGet("myRoles")]
+    [HttpGet("myClaims")]
     [Authorize]
-    public IEnumerable<string> GetUserRoles()
+    public UserClaimsResponse GetUserClaims()
     {
-        var userRoles = User.FindAll(ClaimsIdentity.DefaultRoleClaimType).Select(claim => claim.Value);
-        return userRoles;
+        var userId = User.Identity.GetUserId<long>();
+        var userRoles = User
+            .FindAll(ClaimsIdentity.DefaultRoleClaimType)
+            .Select(claim => claim.Value);
+
+        return new()
+        {
+            UserId = userId,
+            UserRoles = userRoles
+        };
     }
 
     /// <summary>
