@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using CarCatalog.Api.Controllers.Account.Models;
+using CarCatalog.Api.Extensions;
 using CarCatalog.Bll.Services.AccountService;
 using CarCatalog.Bll.Services.AccountService.Models;
 using CarCatalog.Dal.Entities;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -90,10 +90,9 @@ public class AccountController : ControllerBase
     [Authorize]
     public UserClaimsResponse GetUserClaims()
     {
-        var userId = User.Identity.GetUserId<long>();
-        var userRoles = User
-            .FindAll(ClaimsIdentity.DefaultRoleClaimType)
-            .Select(claim => claim.Value);
+        var userId = User.GetUserId();
+
+        var userRoles = User.GetRoles();
 
         return new()
         {

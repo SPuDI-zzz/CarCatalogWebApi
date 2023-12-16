@@ -43,16 +43,16 @@ class AddProduct {
         const carContent = `
             <div class="form-container">
                 <form>
-                    <div class="add-product-element-field">
+                    <div class="form-container-add-field">
                         <input class="form-container-add__input" id="carMarkInput" type="text" placeholder="Марка" value="" />
                     </div>
-                    <div class="add-product-element-field">
+                    <div class="form-container-add-field">
                         <input class="form-container-add__input" id="carModelInput" type="text" placeholder="Модель" value="" />
                     </div>
-                    <div class="add-product-element-field">
+                    <div class="form-container-add-field">
                         <input class="form-container-add__input" id="carColorInput" type="text" placeholder="Цвет" value="" />
                     </div>
-                    <button class="add-product-element__btn" onclick="addProductPage.handlerAddProduct();" type="button">Добавить</button>
+                    <button class="form-container-add__btn" onclick="addProductPage.handlerAddProduct();" type="button">Добавить</button>
                 </form>
             </div>
         `;

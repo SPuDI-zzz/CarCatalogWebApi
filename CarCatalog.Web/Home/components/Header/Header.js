@@ -8,7 +8,8 @@ class Header {
             },
             credentials: 'include'
         });
-        
+
+        webSocketUtils.close();
         window.location.replace(`${URL_ACCOUNT}`);
     }
 
@@ -24,6 +25,7 @@ class Header {
 
         const html = `
             <a onclick="usersPage.render();" class="nav__link">Users</a>
+            <a onclick="notificationsPage.render();" class="nav__link">Notifications</a>
         `;
         return html;
     }

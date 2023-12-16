@@ -24,7 +24,7 @@
 	cursor: pointer;
 }
 
-.add-product-element-field {
+.form-container-add-field {
     background: #eaeaee;
     margin: 15px 0;
     border-radius: 3px;
@@ -43,6 +43,6 @@
     padding: 18px 15px;
 }
 
-.add-product-element__btn {
+.form-container-add__btn {
     cursor: pointer;
 }

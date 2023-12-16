@@ -1,5 +1,6 @@
 using CarCatalog.Api;
 using CarCatalog.Api.Configurations;
+using CarCatalog.Api.Configurations.NotificationManager;
 using CarCatalog.Dal.EntityFramework;
 using CarCatalog.Dal.EntityFramework.Setup;
 using NLog;
@@ -20,6 +21,8 @@ try
     var services = builder.Services;
     var configuration = builder.Configuration;
 
+    services.AddWebSocketManager();
+
     services.AddControllers();
 
     services.AddAppSwagger();
@@ -33,6 +36,8 @@ try
     services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
     var app = builder.Build();
+
+    app.UseAppWebSockets();
 
     app.UseCors(policy => policy.WithOrigins("http://127.0.0.1:5500").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 

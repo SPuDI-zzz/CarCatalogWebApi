@@ -66,10 +66,10 @@ class AddUser {
         const userContent = `
             <div class="form-container">
                 <form>
-                    <div class="add-product-element-field">
+                    <div class="form-container-add-field">
                         <input class="user-form-container__input" id="loginInput" type="text" placeholder="Логин" value="" />
                     </div>
-                    <div class="add-product-element-field">
+                    <div class="form-container-add-field">
                         <input class="user-form-container__input" id="passwordInput" type="text" placeholder="Пароль" value="" />
                     </div>
                     <form>
@@ -87,7 +87,7 @@ class AddUser {
                             </div>
                         </div>
                     </form>
-                    <button class="add-product-element__btn" onclick="addUserPage.handlerAddUser();" type="button">Добавить</button>
+                    <button class="form-container-add__btn" onclick="addUserPage.handlerAddUser();" type="button">Добавить</button>
                 </form>
             </div>
         `;

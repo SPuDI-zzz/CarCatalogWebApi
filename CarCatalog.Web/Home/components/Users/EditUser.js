@@ -71,7 +71,7 @@ class EditUser {
         const userContent = `
             <div class="form-container">
                 <form>
-                    <div class="edit-product-element-field">
+                    <div class="form-container-edit-field">
                         <input class="user-form-container__input" id="loginInput" type="text" placeholder="Логин" value="${user.login}" />
                     </div>
                     <form>
@@ -89,7 +89,7 @@ class EditUser {
                             </div>
                         </div>
                     </form>
-                    <button class="edit-product-element__btn" onclick="editUserPage.handlerEditUser(${user.id});" type="button">Добавить</button>
+                    <button class="form-container-edit__btn" onclick="editUserPage.handlerEditUser(${user.id});" type="button">Добавить</button>
                 </form>
             </div>
         `;

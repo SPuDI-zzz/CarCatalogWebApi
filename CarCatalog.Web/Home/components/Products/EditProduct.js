@@ -43,16 +43,16 @@ class EditProduct {
         const carContent = `
             <div class="form-container">
                 <form>
-                    <div class="edit-product-element-field">
+                    <div class="form-container-edit-field">
                         <input class="form-container-edit__input" id="carMarkInput" type="text" placeholder="Марка" value="${car.mark}" />
                     </div>
-                    <div class="edit-product-element-field">
+                    <div class="form-container-edit-field">
                         <input class="form-container-edit__input" id="carModelInput" type="text" placeholder="Модель" value="${car.model}" />
                     </div>
-                    <div class="edit-product-element-field">
+                    <div class="form-container-edit-field">
                         <input class="form-container-edit__input" id="carColorInput" type="text" placeholder="Цвет" value="${car.color}" />
                     </div>
-                    <button class="edit-product-element__btn" onclick="editProductPage.handlerEditProduct(${car.id});" type="button">Изменить</button>
+                    <button class="form-container-edit__btn" onclick="editProductPage.handlerEditProduct(${car.id});" type="button">Изменить</button>
                 </form>
             </div>
         `;

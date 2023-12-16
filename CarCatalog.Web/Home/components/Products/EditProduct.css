@@ -24,7 +24,7 @@
 	cursor: pointer;
 }
 
-.edit-product-element-field {
+.form-container-edit-field {
     background: #eaeaee;
     margin: 15px 0;
     border-radius: 3px;
@@ -43,6 +43,6 @@
     padding: 18px 15px;
 }
 
-.edit-product-element__btn {
+.form-container-edit__btn {
     cursor: pointer;
 }

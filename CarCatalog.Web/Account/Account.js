@@ -21,6 +21,8 @@ async function handlerLogout() {
 }
 
 async function signIn(login, password) {
+    await handlerLogout()
+
     const body = {
         userName: login,
         password: password
@@ -57,6 +59,7 @@ async function signUp(login, password) {
 }
 
 async function signUpClick() {
+    
     errorInput.innerHTML = "";
     const isContainsDisable = signUpBtn.className.includes("disable");
     if (isContainsDisable) {
@@ -89,6 +92,7 @@ async function signUpClick() {
 }
 
 async function signInClick() {
+    debugger;
     errorInput.innerHTML = "";
     const isContainsDisable = signInBtn.className.includes("disable");
     if (isContainsDisable) {
