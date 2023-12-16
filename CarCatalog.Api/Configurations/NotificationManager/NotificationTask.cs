@@ -1,4 +1,6 @@
-﻿namespace CarCatalog.Api.Configurations.NotificationManager;
+﻿using System.Net.WebSockets;
+
+namespace CarCatalog.Api.Configurations.NotificationManager;
 
 /// <summary>
 ///     Represents a task for sending periodic notifications to connected clients.
@@ -10,6 +12,11 @@
 /// </remarks>
 public class NotificationTask
 {
+    /// <summary>
+    ///     Represents the message for sending notifications.
+    /// </summary>
+    private string _message = string.Empty;
+
     /// <summary>
     ///     Represents the periodic task for sending notifications.
     /// </summary>
@@ -44,32 +51,33 @@ public class NotificationTask
     /// <param name="message">The message to broadcast periodically.</param>
     public void Start(string message)
     {
+        _message = message;
+
         if (_cancellationTokenSource.IsCancellationRequested)
         {
             _periodicTimer = new(TimeSpan.FromMinutes(5));
             _cancellationTokenSource = new();
-            _timerTask = DoWorkAsync(message);
+            _timerTask = DoWorkAsync();
             return;
         }
         
         if (_timerTask is null)
         {
-            _timerTask = DoWorkAsync(message);
+            _timerTask = DoWorkAsync();
         }
     }
 
     /// <summary>
     ///     Asynchronously performs the periodic work of sending notifications.
     /// </summary>
-    /// <param name="message">The message to send periodically.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation of sending notifications.</returns>
-    private async Task DoWorkAsync(string message)
+    private async Task DoWorkAsync()
     {
         try
         {
             while (!_cancellationTokenSource.IsCancellationRequested && await _periodicTimer.WaitForNextTickAsync(_cancellationTokenSource.Token))
             {
-                await _notificationsWebSocketHandler.SendMessageToAllAsync(message);
+                await _notificationsWebSocketHandler.SendMessageToAllAsync(_message);
             }
         }
         catch (OperationCanceledException)
@@ -78,12 +86,27 @@ public class NotificationTask
     }
 
     /// <summary>
+    ///     Sends a message through the specified WebSocket if the periodic task is started.
+    /// </summary>
+    /// <param name="webSocket">The WebSocket through which the message will be sent.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation of sending notification.</returns>
+    public async Task SendIfStartAsync(WebSocket webSocket)
+    {
+        if (_cancellationTokenSource.IsCancellationRequested || _timerTask is null)
+        {
+            return;
+        }
+
+        await _notificationsWebSocketHandler.SendMessageAsync(webSocket, _message);
+    }
+
+    /// <summary>
     ///     Stops the periodic task for sending notifications.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation of stopping the periodic task.</returns>
     public async Task StopAsync()
     {
-        if (_timerTask is null || _cancellationTokenSource.IsCancellationRequested)
+        if (_cancellationTokenSource.IsCancellationRequested || _timerTask is null)
         {
             return;
         }

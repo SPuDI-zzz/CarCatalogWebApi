@@ -25,7 +25,7 @@ class Notifications {
             <div class="notification-container">
                 <div>
                     <button type="button" onclick="notificationsPage.handelerStartNotifications();">Start</button>
-                    <input type="text" id="notificationMessage">
+                    <input type="text" id="notificationMessage" placeholder="Сообщение">
                 </div>
                 <button type="button" onclick="notificationsPage.handelerStopNotifications();">Stop</button>
             </div>

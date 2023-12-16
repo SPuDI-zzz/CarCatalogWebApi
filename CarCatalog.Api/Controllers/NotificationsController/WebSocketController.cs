@@ -14,14 +14,17 @@ namespace CarCatalog.Api.Controllers.NotificationsController;
 public class WebSocketController : ControllerBase
 {
     private readonly NotificationsWebSocketHandler _webSocketHandler;
+    private readonly NotificationTask _notificationTask;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="WebSocketController"/> class.
     /// </summary>
     /// <param name="webSocketHandler">The WebSocket handler for managing WebSocket connections.</param>
-    public WebSocketController(NotificationsWebSocketHandler webSocketHandler)
+    /// <param name="notificationTask">The task for sending periodic notifications to connected clients.</param>
+    public WebSocketController(NotificationsWebSocketHandler webSocketHandler, NotificationTask notificationTask)
     {
         _webSocketHandler = webSocketHandler;
+        _notificationTask = notificationTask;
     }
 
     /// <summary>
@@ -42,8 +45,11 @@ public class WebSocketController : ControllerBase
         var userId = User.GetUserId();
 
         var socket = await HttpContext.WebSockets.AcceptWebSocketAsync();
+
+        await _notificationTask.SendIfStartAsync(socket);
+
         await _webSocketHandler.HandleWebSocketAsync(userId, socket);
-        
+
         return Ok();
     }
 }
