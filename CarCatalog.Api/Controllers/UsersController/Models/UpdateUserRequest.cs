@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using CarCatalog.Bll.Services.UserService.Models;
-using CarCatalog.Shared.Enum;
 
 namespace CarCatalog.Api.Controllers.UsersController.Models;
 
@@ -19,7 +18,7 @@ public class UpdateUserRequest
     ///     Gets or sets the roles assigned to the user.
     /// </summary>
     /// <remarks>This property is required.</remarks>
-    public required IEnumerable<RolesEnum> Roles { get; set; }
+    public required IEnumerable<string> Roles { get; set; }
 }
 
 /// <summary>
@@ -32,8 +31,6 @@ public class UpdateUserRequestProfile : Profile
     /// </summary>
     public UpdateUserRequestProfile()
     {
-        CreateMap<UpdateUserRequest, UpdateUserModel>()
-            .ForMember(dest => dest.Roles, opt =>
-                opt.MapFrom(src => src.Roles.Select(role => role.ToString())));
+        CreateMap<UpdateUserRequest, UpdateUserModel>();
     }
 }
