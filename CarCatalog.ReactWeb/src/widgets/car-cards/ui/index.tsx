@@ -1,23 +1,30 @@
 import { Col, Row } from 'antd';
 import { BasketStore } from 'entities/basket';
-import { CarStore, ICar } from 'entities/car';
+import { CarStore } from 'entities/car';
 import { AuthStore } from 'features/auth';
 import { CarCardWithActions, CarCardWithBasket, IFilterCars } from 'features/car';
 import { observer } from 'mobx-react-lite';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import { Loader } from 'shared/ui';
 
 interface CarCardsProps {
     onEdit: (id: number) => void;
     onDelete: (id: number) => void;
-    filterCars: IFilterCars;
+    filter?: IFilterCars;
 }
 
-const CarCards:FC<CarCardsProps> = ({onEdit, onDelete, filterCars}) => {
+const CarCards:FC<CarCardsProps> = ({onEdit, onDelete, filter}) => {
     const {cars, isFetched, getCarsAction: getCars} = CarStore;
     const {carIdsSet, toggleCar} = BasketStore;
     const {userClaims, inRole} = AuthStore;
-    const [filteredCars, setFilteredCars] = useState<ICar[]>(cars)
+
+    const filteredCars = useMemo(() => (
+        cars.filter(car =>
+            (!filter?.mark || car.mark === filter.mark) &&
+            (!filter?.color || car.color === filter?.color) &&
+            (!filter?.naming || car.mark.toLowerCase().includes(filter.naming) || car.model.toLowerCase().includes(filter.naming))
+        )
+    ), [cars, filter?.color, filter?.mark, filter?.naming]);
 
     const onShop = (carId: number) => {
         toggleCar(carId, userClaims!.userId);
@@ -26,16 +33,6 @@ const CarCards:FC<CarCardsProps> = ({onEdit, onDelete, filterCars}) => {
     useEffect(() => {
         getCars();
     }, [getCars]);
-
-    useEffect(() => {
-        setFilteredCars(
-            cars.filter(car =>
-                (!filterCars.mark || car.mark === filterCars.mark) &&
-                (!filterCars.color || car.color === filterCars.color) &&
-                (!filterCars.naming || car.mark.toLowerCase().includes(filterCars.naming) || car.model.toLowerCase().includes(filterCars.naming))
-            )
-        )
-    }, [cars, filterCars.color, filterCars.mark, filterCars.naming])
 
     if (!isFetched)
         return <Loader/>

@@ -30,9 +30,16 @@ export default class ErrorBoundary extends React.Component<any, any> {
         console.error(errorInfo);
     }
     
+    reset = () => {
+        this.setState({
+            hasError: false,
+            error: undefined,
+        })
+    }
+
     render(): React.ReactNode {
         if (this.state.hasError) {
-            return <ErrorPage error={this.state.error}/>
+            return <ErrorPage reset={this.reset} error={this.state.error}/>
         } else {
             return <Outlet/>
         }

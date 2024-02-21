@@ -1,14 +1,14 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { createUser, deleteUser, fetchUser, fetchUsers, updateUser } from "../api";
-import axios from "axios";
-import { IErrorData, IErrorResponse } from "shared/utils";
+import axios, { AxiosError } from "axios";
+import { IErrorData } from "shared/utils";
 import { ICreateUserForm, IUser, IUpdateUserForm } from "./types";
 
 class UserStore {
     users: IUser[] = [];
     isLoading: boolean = false;
     isFetched: boolean = false;
-    error?: IErrorResponse<IErrorData>; 
+    error?: AxiosError<IErrorData>; 
 
     constructor() {
         makeAutoObservable(this);
@@ -35,10 +35,7 @@ class UserStore {
                 this.isLoading = false;
 
                 if (axios.isAxiosError(error)) {
-                    this.error = {
-                        data: error.response?.data,
-                        status: error.response?.status ?? 500,
-                    }
+                    this.error = error;
                 }
             });
         }
@@ -63,10 +60,7 @@ class UserStore {
                 this.isLoading = false;
 
                 if (axios.isAxiosError(error)) {
-                    this.error = {
-                        data: error.response?.data,
-                        status: error.response?.status ?? 500,
-                    }
+                    this.error = error;
                 }
             });
             return {} as IUser;
@@ -91,10 +85,7 @@ class UserStore {
                 this.isLoading = false;
 
                 if (axios.isAxiosError(error)) {
-                    this.error = {
-                        data: error.response?.data,
-                        status: error.response?.status ?? 500,
-                    }
+                    this.error = error;
                 }
             });
             return false;
@@ -119,10 +110,7 @@ class UserStore {
                 this.isLoading = false;
 
                 if (axios.isAxiosError(error)) {
-                    this.error = {
-                        data: error.response?.data,
-                        status: error.response?.status ?? 500,
-                    }
+                    this.error = error;
                 }
             });
             return false;
@@ -147,14 +135,15 @@ class UserStore {
                 this.isLoading = false;
 
                 if (axios.isAxiosError(error)) {
-                    this.error = {
-                        data: error.response?.data,
-                        status: error.response?.status ?? 500,
-                    }
+                    this.error = error;
                 }
             });
             return false;
         }
+    }
+
+    resetError = () => {
+        this.error = undefined;
     }
 
     dispose = () => {

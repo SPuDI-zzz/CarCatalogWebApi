@@ -1,40 +1,47 @@
-import { Alert, Button, Modal, Row, Space } from 'antd';
-import { useForm } from 'antd/es/form/Form';
-import { IUser, UserStore, ICreateUserForm, IUserForm } from 'entities/user';
+import { Button, Row } from 'antd';
+import { IUser, UserStore } from 'entities/user';
 import { AuthStore } from 'features/auth';
-import { CreateUserDrawer, EditUserDrawer } from 'features/user';
+import { ConfirmUserModal, CreateUserDrawer, EditUserDrawer } from 'features/user';
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { URL_ROUTES } from 'shared/utils';
 import { UserCards } from 'widgets/user-cards';
+import styles from './index.module.css'
+import { ErrorResponseMessage } from 'shared/ui';
+import { HttpStatusCode } from 'axios';
 
 const Users = () => {
     const {logoutAction: logout} = AuthStore
     const {
-        getUsersAction: getUsers,
         error,
-        dispose,
         isLoading,
         isFetched,
         getUserAction: getUser,
-        createUserAction: createUser,
-        updateUserAction: updateUser,
-        deleteUserAction: deleteUser,
+        resetError,
     } = UserStore;
     const [isCreateOpened, setIsCreateOpened] = useState(false);
     const [isEditOpened, setIsEditOpened] = useState(false);
     const [isDeleteOpened, setIsDeleteOpened] = useState(false);
-    const [form] = useForm<IUserForm>();
-    const [removeUser, setRemoveUser] = useState<IUser>();
+    const [editUser, setEditUser] = useState<IUser>();
+    const [deleteUser, setDeleteUser] = useState<IUser>();
     const navigate = useNavigate();
 
-    const onClose = () => {
+    const onCreateClose = () => {
         setIsCreateOpened(false);
+        resetError();
+    }
+
+    const onEditClose = () => {
+        setEditUser(undefined);
         setIsEditOpened(false);
+        resetError();
+    }
+
+    const onDeleteClose = () => {
+        setDeleteUser(undefined);
         setIsDeleteOpened(false);
-        setRemoveUser(undefined);
-        form.resetFields();
+        resetError();
     }
 
     const onCreate = () => {
@@ -44,110 +51,80 @@ const Users = () => {
     const onEdit = async (id: number) => {
         setIsEditOpened(true);
         const user = await getUser(id);
-        form.setFieldsValue(user);
+        setEditUser(user);
     }
 
     const onDelete = async (id: number) => {
         setIsDeleteOpened(true);
         const user = await getUser(id);
-        setRemoveUser(user);
+        setDeleteUser(user);
     }
 
-    const onCreateFinish = async (data: ICreateUserForm) => {
-        debugger;
-        const isCreated = await createUser(data);
-        if (isCreated)
-            await getUsers();
+    const onEditSuccess = () => {
+        setIsEditOpened(false);
     }
 
-    const onEditFinish = async (data: IUser) => {
-        const isUpdated = await updateUser(data.id, data);
-        if (isUpdated)
-            await getUsers();
-    }
-
-    const onDeleteFinish = async () => {
-        if (removeUser) {
-            const isDeleted = await deleteUser(removeUser.id);
-            if (isDeleted) {
-                await getUsers();
-                setIsDeleteOpened(false);
-            }
-        }
+    const onDeleteSuccess = async () => {
+        setIsDeleteOpened(false);      
     }
     
     useEffect(() => {
         if (!error)
             return;
 
-        if (error.status === 401 || error.status === 403) {
-            logout()
-            .then(_ => navigate(URL_ROUTES.LOGIN));
+        if (!error.response)
+            throw error;
+
+        if (error.response.status === HttpStatusCode.Unauthorized || 
+            error.response.status === HttpStatusCode.Forbidden
+        ) {
+            navigate(URL_ROUTES.LOGIN);
+            logout();
+            return;
         }
 
-        if (error.status !== 400 && error.status !== 404)
+        if (error.response.status !== HttpStatusCode.BadRequest &&
+            error.response.status !== HttpStatusCode.NotFound
+        ) {
             throw error;
-    }, [error, navigate, dispose, logout]);
+        }
+    }, [error, navigate, logout]);   
 
     return (
         <>
-            <Space direction={'vertical'} size={'large'} style={{ display: 'flex' }}>
-                <Row>
-                    <Button onClick={onCreate}>Создать</Button>
-                </Row>
-                <UserCards onEdit={onEdit} onDelete={onDelete}/>
-            </Space>
+            <Row className={styles.rowContainer}>
+                <Button onClick={onCreate}>Создать</Button>
+            </Row>
+            <UserCards onEdit={onEdit} onDelete={onDelete}/>
             <CreateUserDrawer
                 isOpened={isCreateOpened}
                 isLoading={isLoading && isFetched}
-                onClose={onClose}
-                onFinish={onCreateFinish}
-                form={form}
+                onClose={onCreateClose}
             >
-                {error?.data?.errors.map((error, index) => 
-                    <Alert
-                        key={index}
-                        type={'error'}
-                        message={error.description}
-                    />
-                )}
+                {error ?
+                    <ErrorResponseMessage error={error}/> :
+                    null
+                }
             </CreateUserDrawer>
             <EditUserDrawer
                 isOpened={isEditOpened}
                 isLoading={isLoading && isFetched}
-                onClose={onClose}
-                onFinish={onEditFinish}
-                form={form}
+                onClose={onEditClose}
+                onSuccess={onEditSuccess}
+                user={editUser}
             >
-                {error?.data?.errors.map((error, index) => 
-                    <Alert
-                        key={index}
-                        type={'error'}
-                        message={error.description}
-                    />
-                )}
-            </EditUserDrawer>
-            <Modal
-                title={'Удаление пользователя'}
-                open={isDeleteOpened}
-                onCancel={onClose}
-                confirmLoading={isLoading && isFetched}
-                okText={'Подтвердить'}
-                cancelText={'Отмена'}
-                onOk={onDeleteFinish}
-            >
-                {removeUser ?
-                    <p>{`Вы уверены, что хотите удалить: ${removeUser.login}`}</p>:
-                    <p>{'Загрузка...'}</p>
+                {error ?
+                    <ErrorResponseMessage error={error}/> :
+                    null
                 }
-                {error?.data?.errors.map((error, index) => 
-                    <Alert
-                        key={index}
-                        type={'error'}
-                        message={error.description}
-                    />
-                )}
-            </Modal>
+            </EditUserDrawer>
+            <ConfirmUserModal
+                isOpened={isDeleteOpened}
+                onClose={onDeleteClose}
+                isLoading={isLoading && isFetched}
+                onSuccess={onDeleteSuccess}
+                user={deleteUser}
+            />
         </>
     );
 };

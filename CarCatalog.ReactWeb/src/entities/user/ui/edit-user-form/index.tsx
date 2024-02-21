@@ -34,7 +34,7 @@ const EditUserForm:FC<PropsWithChildren<EditUserFormProps>> = ({children, isLoad
                     label={'Логин'}
                     rules={[yupSync]}
                 >
-                    <Input size={'large'} placeholder={'Логин'}></Input>
+                    <Input value={'qwe'} size={'large'} placeholder={'Логин'}></Input>
                 </Form.Item>
                 <Form.Item 
                     name={'roles'}

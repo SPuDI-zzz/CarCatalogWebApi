@@ -11,16 +11,16 @@ import { BasketShop } from 'features/basket-shop';
 
 
 const Header = () => {
-    const {isAuthenticated, logoutAction: logout, inRole} = AuthStore;
+    const {isAuthenticated, logoutAction: logout, inRole, resetError} = AuthStore;
     const [isOpened, setIsOpened] = useState(false);
     const navigate = useNavigate();
 
     const onLogout = async () => {
-        await logout();
         navigate(URL_ROUTES.LOGIN);
+        await logout();
     }
 
-    const onClose = () => {
+    const onShopClose = () => {
         setIsOpened(false);
     }
 
@@ -56,16 +56,16 @@ const Header = () => {
                         <Button onClick={onLogout} className={styles.logoutBtn} type='link'>Выйти</Button>  
                     </> : 
                     <>
-                        <Link to={URL_ROUTES.REGISTER}>
+                        <Link onClick={resetError} to={URL_ROUTES.REGISTER}>
                             <Button className={styles.registerBtn} type='link'>Зарегистрироваться</Button>
                         </Link>
-                        <Link to={URL_ROUTES.LOGIN}>
+                        <Link onClick={resetError} to={URL_ROUTES.LOGIN}>
                             <Button className={styles.loginBtn} type='link'>Войти</Button>
                         </Link>
                     </>
                 }
             </Space>
-            <BasketShop onClose={onClose} isOpened={isOpened}/>
+            <BasketShop onClose={onShopClose} isOpened={isOpened}/>
         </Layout.Header>
     );
 };

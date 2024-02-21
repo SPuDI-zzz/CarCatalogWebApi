@@ -1,8 +1,10 @@
-import { Alert } from 'antd';
+import { HttpStatusCode } from 'axios';
 import { IRegister, RegisterCard } from 'entities/register';
 import { AuthStore } from 'features/auth';
 import { observer } from 'mobx-react-lite';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ErrorResponseMessage } from 'shared/ui';
 import { URL_ROUTES } from 'shared/utils';
 
 const Register = () => {
@@ -16,15 +18,20 @@ const Register = () => {
             navigate(URL_ROUTES.LOGIN);
     }
 
+    useEffect(() => {
+        if (!error)
+            return;
+
+        if (error.response?.status !== HttpStatusCode.BadRequest)
+            throw error
+    }, [error]);
+
     return (
         <RegisterCard isLoading={isLoading} onFinish={onFinish}>
-            {error?.data?.errors.map((error, index) => 
-                <Alert
-                    key={index}
-                    type={'error'}
-                    message={error.description}
-                />
-            )}
+            {error ?
+                <ErrorResponseMessage error={error}/> :
+                null
+            }    
         </RegisterCard>
     );
 };

@@ -1,9 +1,9 @@
 import { ILogin, fetchLogin } from "entities/login";
 import { makeAutoObservable, runInAction } from "mobx";
 import { fetchLogout, fetchUserClaims } from "../api";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { IUserClaims } from "./types";
-import { IErrorData, IErrorResponse } from "shared/utils";
+import { IErrorData } from "shared/utils";
 import { IRegister, fetchRegister } from "entities/register";
 import { Role, UserStore } from "entities/user";
 import { CarStore } from "entities/car";
@@ -11,14 +11,16 @@ import { BasketStore } from "entities/basket";
 
 class AuthStore {
     userClaims?: IUserClaims;
-    error?: IErrorResponse<IErrorData>;
+    error?: AxiosError<IErrorData>;
     isLoading: boolean = false;
+    isFetched: boolean = false;
     private carStore = CarStore;
     private userStore = UserStore;
     private basketStore = BasketStore;
 
     constructor() {
         makeAutoObservable(this);
+        this.getClaimsAction();
     }
 
     get isAuthenticated() {
@@ -37,7 +39,6 @@ class AuthStore {
             }); 
             
             await fetchLogin(data);
-            await this.getClaimsAction(); 
 
             runInAction(() => {
                 this.isLoading = false;
@@ -49,10 +50,7 @@ class AuthStore {
                 this.userClaims = undefined;
                 
                 if (axios.isAxiosError(error)) {
-                    this.error = {
-                        data: error.response?.data,
-                        status: error.response?.status ?? 500,
-                    }
+                    this.error = error;
                 }
             });
 
@@ -79,10 +77,7 @@ class AuthStore {
                 this.isLoading = false;
 
                 if (axios.isAxiosError(error)) {
-                    this.error = {
-                        data: error.response?.data,
-                        status: error.response?.status ?? 500,
-                    }
+                    this.error = error;
                 }
             });
 
@@ -94,7 +89,7 @@ class AuthStore {
         try {
             runInAction(() => {
                 this.isLoading = true;
-                this.error = undefined;
+                this.isFetched = false;
             }); 
 
             const response = await fetchUserClaims();
@@ -102,6 +97,7 @@ class AuthStore {
             runInAction(() => {
                 this.userClaims = response.data;
                 this.isLoading = false;
+                this.isFetched = true;
             });
 
             return true;
@@ -109,13 +105,7 @@ class AuthStore {
             runInAction(() => {
                 this.userClaims = undefined;
                 this.isLoading = false;
-
-                if (axios.isAxiosError(error)) {
-                    this.error = {
-                        data: error.response?.data,
-                        status: error.response?.status ?? 500,
-                    }
-                }
+                this.isFetched = true;
             });
 
             return false;
@@ -127,6 +117,7 @@ class AuthStore {
             runInAction(() => {
                 this.isLoading = true;
                 this.error = undefined;
+                this.isFetched = false;
             }); 
 
             if (this.isAuthenticated) {
@@ -136,6 +127,7 @@ class AuthStore {
             runInAction(() => {
                 this.userClaims = undefined;
                 this.isLoading = false;
+                this.isFetched = true;
                 this.carStore.dispose()
                 this.userStore.dispose();
                 this.basketStore.dispose();
@@ -146,17 +138,19 @@ class AuthStore {
         catch (error: unknown) {
             runInAction(() => {
                 this.isLoading = false;
+                this.isFetched = true;
 
                 if (axios.isAxiosError(error)) {
-                    this.error = {
-                        data: error.response?.data,
-                        status: error.response?.status ?? 500,
-                    }
+                    this.error = error;
                 }
             });
 
             return false;
         }
+    }
+
+    resetError = () => {
+        this.error = undefined;
     }
 }
 

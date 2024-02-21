@@ -1,6 +1,8 @@
 import { BasketStore } from "entities/basket";
 import { useEffect, useState } from "react";
 
+const { fetchCars } = BasketStore;
+
 export const useLoadBasketCars = (userId?: number) => {
     const [isFetched, setIsFetched] = useState(false);
 
@@ -8,7 +10,7 @@ export const useLoadBasketCars = (userId?: number) => {
         setIsFetched(false);
         
         if (userId) {
-            BasketStore.fetchCars(userId)
+            fetchCars(userId);
             setIsFetched(true);
         }
     }, [userId]);

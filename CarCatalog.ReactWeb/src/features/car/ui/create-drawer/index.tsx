@@ -1,13 +1,14 @@
-import { Button, Drawer, FormInstance, Space } from 'antd';
-import { CarForm, ICar } from 'entities/car';
+import { Button, Drawer, Form, Space } from 'antd';
+import { CarForm, CarStore, ICar, ICarForm } from 'entities/car';
+import { AuthStore } from 'features/auth';
+import { observer } from 'mobx-react-lite';
 import React, { FC, PropsWithChildren, useId } from 'react';
 
 interface CreateCarDrawerProps {
     isOpened: boolean;
     onClose: () => void;
     isLoading?: boolean;
-    onFinish: (data: ICar) => void;
-    form?: FormInstance<ICar>;
+    onSuccess?: () => void;
 }
 
 const CreateCarDrawer:FC<PropsWithChildren<CreateCarDrawerProps>> = ({
@@ -15,25 +16,38 @@ const CreateCarDrawer:FC<PropsWithChildren<CreateCarDrawerProps>> = ({
     isOpened,
     onClose,
     isLoading,
-    onFinish,
-    form,
+    onSuccess,
 }) => {
+    const {userClaims} = AuthStore;
+    const {createCarAction: createCar, getCarsAction: getCars} = CarStore;
+    const [form] = Form.useForm<ICar>();
     const formId = useId();
+
+    const onFinish = async (data: ICarForm) => {
+        const car: ICarForm = {...data, userId: userClaims!.userId}
+        const isCreated = await createCar(car);
+        if (isCreated) {
+            onSuccess?.();
+            form.resetFields();
+            await getCars();
+        }
+    }
+
+    const onCloseHandler = () => {
+        form.resetFields();
+        onClose();
+    }
 
     return (
         <Drawer
+            destroyOnClose={true}
             title={'Создать автомобиль'}
-            onClose={onClose}
+            onClose={onCloseHandler}
             open={isOpened}
             size={'large'}
-            styles={{
-                body: {
-                    paddingBottom: 80,
-                },
-            }}
             extra={
                 <Space>
-                    <Button onClick={onClose}>Отмена</Button>
+                    <Button onClick={onCloseHandler}>Отмена</Button>
                     <Button 
                         loading={isLoading}
                         type={'primary'}
@@ -57,4 +71,4 @@ const CreateCarDrawer:FC<PropsWithChildren<CreateCarDrawerProps>> = ({
     );
 };
 
-export default CreateCarDrawer;
+export default observer(CreateCarDrawer);

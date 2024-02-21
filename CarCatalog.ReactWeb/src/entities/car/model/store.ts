@@ -1,14 +1,13 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { createCar, deleteCar, fetchCar, fetchCars, updateCar } from "../api";
-import axios from "axios";
-import { IErrorData, IErrorResponse } from "shared/utils";
+import axios, { AxiosError } from "axios";
 import { ICar, ICarForm } from "./types";
 
 class CarStore {
     cars: ICar[] = [];
     isLoading: boolean = false;
     isFetched: boolean = false;
-    error?: IErrorResponse<IErrorData>; 
+    error?: AxiosError<any>; 
 
     constructor() {
         makeAutoObservable(this);
@@ -34,10 +33,7 @@ class CarStore {
                 this.isLoading = false;
 
                 if (axios.isAxiosError(error)) {
-                    this.error = {
-                        data: error.response?.data,
-                        status: error.response?.status ?? 500,
-                    }
+                    this.error = error;
                 }
             });
         }
@@ -62,10 +58,7 @@ class CarStore {
                 this.isLoading = false;
 
                 if (axios.isAxiosError(error)) {
-                    this.error = {
-                        data: error.response?.data,
-                        status: error.response?.status ?? 500,
-                    }
+                    this.error = error;
                 }
             });
             return {} as ICar;
@@ -90,10 +83,7 @@ class CarStore {
                 this.isLoading = false;
 
                 if (axios.isAxiosError(error)) {
-                    this.error = {
-                        data: error.response?.data,
-                        status: error.response?.status ?? 500,
-                    }
+                    this.error = error;
                 }
             });
             return false;
@@ -118,10 +108,7 @@ class CarStore {
                 this.isLoading = false;
 
                 if (axios.isAxiosError(error)) {
-                    this.error = {
-                        data: error.response?.data,
-                        status: error.response?.status ?? 500,
-                    }
+                    this.error = error;
                 }
             });
             return false;
@@ -146,14 +133,15 @@ class CarStore {
                 this.isLoading = false;
 
                 if (axios.isAxiosError(error)) {
-                    this.error = {
-                        data: error.response?.data,
-                        status: error.response?.status ?? 500,
-                    }
+                    this.error = error;
                 }
             });
             return false;
         }
+    }
+
+    resetError = () => {
+        this.error = undefined;
     }
 
     dispose = () => {

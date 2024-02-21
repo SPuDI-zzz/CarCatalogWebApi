@@ -1,37 +1,33 @@
-import { Alert, Button, Col, Modal, Row, Space } from 'antd';
-import { CarStore, ICar, ICarForm } from 'entities/car';
+import { Button, Col, Row } from 'antd';
+import { CarStore, ICar } from 'entities/car';
 import { AuthStore } from 'features/auth';
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { URL_ROUTES } from 'shared/utils';
-import { useForm } from 'antd/es/form/Form';
-import { CarColorFilter, CarMarkFilter, CreateCarDrawer, EditCarDrawer, IFilterCars } from 'features/car';
+import { CarColorFilter, CarMarkFilter, CarNamingFilter, ConfirmCarModal, CreateCarDrawer, EditCarDrawer, IFilterCars } from 'features/car';
 import { CarCards } from 'widgets/car-cards';
-import { BasketStore } from 'entities/basket';
-import Search from 'antd/es/input/Search';
 import styles from './index.module.css'
+import { BasketStore } from 'entities/basket';
+import { ErrorResponseMessage } from 'shared/ui';
+import { HttpStatusCode } from 'axios';
 
 const Cars = () => {
-    const {logoutAction: logout, userClaims} = AuthStore;
+    const {logoutAction: logout, userClaims, inRole} = AuthStore;
     const {
-        getCarsAction: getCars,
         error,
-        dispose,
         isLoading,
         isFetched,
         getCarAction: getCar,
-        createCarAction: createCar,
-        updateCarAction: updateCar,
-        deleteCarAction: deleteCar,
+        resetError
     } = CarStore;
+    const {removeIfContainsCarId} = BasketStore;
     const [filters, setFilters] = useState<IFilterCars>({});
     const [isCreateOpened, setIsCreateOpened] = useState(false);
     const [isEditOpened, setIsEditOpened] = useState(false);
     const [isDeleteOpened, setIsDeleteOpened] = useState(false);
-    const [form] = useForm<ICar>();
-    const [removeCar, setRemoveCar] = useState<ICar>();
-    const {removeIfContainsCarId} = BasketStore;
+    const [editCar, setEditCar] = useState<ICar>();
+    const [deleteCar, setRemoveCar] = useState<ICar>();
     const navigate = useNavigate();
 
     const onChangeColor = (color?: string) => {
@@ -42,16 +38,25 @@ const Cars = () => {
         setFilters(prev => ({...prev, mark}))
     }
 
-    const onChangeNaming = (naming?: string) => {
+    const onSearchNaming = (naming?: string) => {
         setFilters(prev => ({...prev, naming}))
     }
 
-    const onClose = () => {
+    const onCreateClose = () => {
         setIsCreateOpened(false);
+        resetError();
+    }
+
+    const onEditClose = () => {
+        setEditCar(undefined);
         setIsEditOpened(false);
-        setIsDeleteOpened(false);
+        resetError();
+    }
+
+    const onDeleteClose = () => {
         setRemoveCar(undefined);
-        form.resetFields();
+        setIsDeleteOpened(false);
+        resetError();
     }
 
     const onCreate = () => {
@@ -61,7 +66,7 @@ const Cars = () => {
     const onEdit = async (id: number) => {
         setIsEditOpened(true);
         const car = await getCar(id);
-        form.setFieldsValue(car);
+        setEditCar(car);
     }
 
     const onDelete = async (id: number) => {
@@ -70,27 +75,14 @@ const Cars = () => {
         setRemoveCar(car);
     }
 
-    const onCreateFinish = async (data: ICarForm) => {
-        const car: ICarForm = {...data, userId: userClaims!.userId}
-        const isCreated = await createCar(car);
-        if (isCreated)
-            await getCars();
+    const onEditSuccess = () => {
+        setIsEditOpened(false);
     }
 
-    const onEditFinish = async (data: ICar) => {
-        const isUpdated = await updateCar(data.id, data);
-        if (isUpdated)
-            await getCars();
-    }
-
-    const onDeleteFinish = async () => {
-        if (removeCar) {
-            const isDeleted = await deleteCar(removeCar.id);
-            if (isDeleted) {
-                removeIfContainsCarId(removeCar.id, userClaims!.userId);
-                await getCars();
-                setIsDeleteOpened(false);
-            }
+    const onDeleteSuccess = async () => {
+        if (deleteCar && userClaims) {
+            removeIfContainsCarId(deleteCar.id, userClaims.userId);
+            setIsDeleteOpened(false);            
         }
     }
     
@@ -98,98 +90,77 @@ const Cars = () => {
         if (!error)
             return;
 
-        if (error.status === 401) {
-            logout()
-            .then(_ => navigate(URL_ROUTES.LOGIN));
+        if (!error.response)
+            throw error;
+
+        if (error.response.status === HttpStatusCode.Unauthorized || 
+            error.response.status === HttpStatusCode.Forbidden
+        ) {
+            navigate(URL_ROUTES.LOGIN);
+            logout();
+            return;
         }
 
-        if (error.status !== 400 && error.status !== 404)
+        if (error.response.status !== HttpStatusCode.BadRequest &&
+            error.response.status !== HttpStatusCode.NotFound
+        ) {
             throw error;
-    }, [navigate, dispose, logout, error]);   
+        }
+    }, [error, navigate, logout]);   
 
     return (
         <>
-            <Space 
-                direction={'vertical'}
-                size={'large'}
-                className={styles.space}
-            >
-                <Row gutter={[12, 12]}>
-                    <Col span={4}>
-                        <CarMarkFilter onChange={onChangeMark}/>
-                    </Col>
-                    <Col span={4}>
-                        <CarColorFilter onChange={onChangeColor}/>
-                    </Col>
-                    <Col span={4}>
-                        <Search 
-                            allowClear
-                            size={'large'}
-                            onSearch={onChangeNaming}
-                            placeholder={'Поиск по наименованию'}
-                        />
-                    </Col>
+            <Row className={styles.rowContainer} gutter={[24, 24]}>
+                <Col xs={24} sm={24} md={12} lg={8} xl={8} xxl={6}>
+                    <CarMarkFilter onChange={onChangeMark}/>
+                </Col>
+                <Col xs={24} sm={24} md={12} lg={8} xl={8} xxl={6}>
+                    <CarColorFilter onChange={onChangeColor}/>
+                </Col>
+                <Col xs={24} sm={24} md={12} lg={8} xl={8} xxl={6}>
+                    <CarNamingFilter onSearch={onSearchNaming}/>
+                </Col>
+                {inRole('Manager') || inRole('Admin') ?
                     <Col>
                         <Button size={'large'} onClick={onCreate}>Создать</Button>
-                    </Col>
-                </Row>           
-                <CarCards 
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                    filterCars={filters}
-                />
-            </Space>
+                    </Col> :
+                    null
+                }
+            </Row>           
+            <CarCards 
+                onEdit={onEdit}
+                onDelete={onDelete}
+                filter={filters}
+            />
             <CreateCarDrawer
                 isOpened={isCreateOpened}
                 isLoading={isLoading && isFetched}
-                onClose={onClose}
-                onFinish={onCreateFinish}
-                form={form}
+                onClose={onCreateClose}
             >
-                {error?.data?.errors.map((error, index) => 
-                    <Alert
-                        key={index}
-                        type={'error'}
-                        message={error.description}
-                    />
-                )}
+                {error ?
+                    <ErrorResponseMessage error={error}/> :
+                    null
+                }
             </CreateCarDrawer>
             <EditCarDrawer
                 isOpened={isEditOpened}
                 isLoading={isLoading && isFetched}
-                onClose={onClose}
-                onFinish={onEditFinish}
-                form={form}
+                onClose={onEditClose}
+                car={editCar}
+                onSuccess={onEditSuccess}
             >
-                {error?.data?.errors.map((error, index) => 
-                    <Alert
-                        key={index}
-                        type={'error'}
-                        message={error.description}
-                    />
-                )}
-            </EditCarDrawer>
-            <Modal
-                title={'Удаление автомобиля'}
-                open={isDeleteOpened}
-                onCancel={onClose}
-                confirmLoading={isLoading && isFetched}
-                okText={'Подтвердить'}
-                cancelText={'Отмена'}
-                onOk={onDeleteFinish}
-            >
-                {removeCar ?
-                    <p>{`Вы уверены, что хотите удалить: ${removeCar.mark} ${removeCar.model}`}</p> :
-                    <p>{'Загрузка...'}</p>
+                {error ?
+                    <ErrorResponseMessage error={error}/> :
+                    null
                 }
-                {error?.data?.errors.map((error, index) => 
-                    <Alert
-                        key={index}
-                        type={'error'}
-                        message={error.description}
-                    />
-                )}
-            </Modal>
+            </EditCarDrawer>
+            <ConfirmCarModal
+                isOpened={isDeleteOpened}
+                onClose={onDeleteClose}
+                isLoading={isLoading && isFetched}
+                onSuccess={onDeleteSuccess}
+                car={deleteCar}
+            />
         </>
     );
 };

@@ -1,13 +1,11 @@
-import { Button, Drawer, FormInstance, Space } from 'antd';
-import { CreateUserForm, ICreateUserForm } from 'entities/user';
+import { Button, Drawer, Form, Space } from 'antd';
+import { CreateUserForm, ICreateUserForm, UserStore } from 'entities/user';
 import React, { FC, PropsWithChildren, useId } from 'react';
 
 interface CreateUserDrawerProps {
     isOpened: boolean;
     onClose: () => void;
     isLoading?: boolean;
-    onFinish: (data: ICreateUserForm) => void;
-    form?: FormInstance<ICreateUserForm>;
 }
 
 const CreateUserDrawer:FC<PropsWithChildren<CreateUserDrawerProps>> = ({
@@ -15,25 +13,34 @@ const CreateUserDrawer:FC<PropsWithChildren<CreateUserDrawerProps>> = ({
     isOpened,
     onClose,
     isLoading,
-    onFinish,
-    form,
 }) => {
+    const [form] = Form.useForm<ICreateUserForm>();
+    const {createUserAction: createUser, getUsersAction: getUsers} = UserStore;
     const formId = useId();
+
+    const onFinish = async (data: ICreateUserForm) => {
+        const isCreated = await createUser(data);
+        if (isCreated) {
+            form.resetFields();
+            await getUsers();
+        }
+    }
+
+    const onCloseHandler = () => {
+        form.resetFields();
+        onClose();
+    }
 
     return (
         <Drawer
+            destroyOnClose={true}
             title={'Создать пользователя'}
-            onClose={onClose}
+            onClose={onCloseHandler}
             open={isOpened}
             size={'large'}
-            styles={{
-                body: {
-                    paddingBottom: 80,
-                },
-            }}
             extra={
                 <Space>
-                    <Button onClick={onClose}>Отмена</Button>
+                    <Button onClick={onCloseHandler}>Отмена</Button>
                     <Button 
                         loading={isLoading}
                         type={'primary'}

@@ -2,7 +2,7 @@ import { Select } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import { CarStore } from 'entities/car';
 import { observer } from 'mobx-react-lite';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useMemo } from 'react';
 import styles from './index.module.css'
 
 interface CarColorFilterProps {
@@ -10,11 +10,15 @@ interface CarColorFilterProps {
 }
 
 const CarColorFilter:FC<CarColorFilterProps> = ({onChange}) => {
-    const [colors, setColors] = useState(new Set<string>());
     const {cars} = CarStore;
 
-    useEffect(() => {
-        setColors(new Set(cars.map(car => car.color)))
+    const options = useMemo(() => {
+        const colorsSet = new Set(cars.map(car => car.color));
+        const colorOptions = Array.from(colorsSet).map(color => ({
+            label: color,
+            value: color,
+        } as DefaultOptionType));
+        return colorOptions;
     }, [cars]);
     
     return (
@@ -24,10 +28,7 @@ const CarColorFilter:FC<CarColorFilterProps> = ({onChange}) => {
             onChange={onChange}
             className={styles.select}
             placeholder={'Выберите цвет'}
-            options={Array.from(colors).map(color => ({
-                label: color,
-                value: color,
-            } as DefaultOptionType))}
+            options={options}
         />
     );
 };

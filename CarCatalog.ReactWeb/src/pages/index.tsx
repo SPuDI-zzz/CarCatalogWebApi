@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { LoginPage } from 'pages/login';
 import { RegisterPage } from 'pages/register';
 import { URL_ROUTES } from 'shared/utils';
-import { AuthStore, useLoadUserClaims } from 'features/auth';
+import { AuthStore } from 'features/auth';
 import { HomePage } from './home';
 import { CarsPage } from './cars';
 import { UsersPage } from './users';
@@ -14,8 +14,7 @@ import { useLoadBasketCars } from 'features/basket-shop';
 import { ErrorBoundary } from './error';
 
 const Router = () => {
-    const { isAuthenticated, inRole, userClaims } = AuthStore;
-    const { isFetched } = useLoadUserClaims();
+    const { isAuthenticated, inRole, userClaims, isFetched } = AuthStore;
     useLoadBasketCars(userClaims?.userId);
 
     if (!isFetched)
@@ -28,20 +27,20 @@ const Router = () => {
                     element={<AppLayout />}
                 >
                     <Route path={URL_ROUTES.HOME} element={<HomePage />} />
-                    {!isAuthenticated ?
-                        <>
-                            <Route path={URL_ROUTES.LOGIN} element={<LoginPage />} />
-                            <Route path={URL_ROUTES.REGISTER} element={<RegisterPage />} />
-                            <Route path={'*'} element={<Navigate to={URL_ROUTES.LOGIN} />} />
-                        </> :
-                        <>
-                            <Route path={URL_ROUTES.CARS} element={<CarsPage />} />
-                            {inRole('Admin') ?
-                                <Route path={URL_ROUTES.USERS} element={<UsersPage />} /> :
-                                null
-                            }
-                        </>
-                    }
+                        {!isAuthenticated ?
+                            <>
+                                <Route path={URL_ROUTES.LOGIN} element={<LoginPage />} />
+                                <Route path={URL_ROUTES.REGISTER} element={<RegisterPage />} />
+                                <Route path={'*'} element={<Navigate to={URL_ROUTES.LOGIN} />} />
+                            </> :
+                            <>
+                                <Route path={URL_ROUTES.CARS} element={<CarsPage />} />
+                                {inRole('Admin') ?
+                                    <Route path={URL_ROUTES.USERS} element={<UsersPage />} /> :
+                                    null
+                                }
+                            </>
+                        }
                 </Route>
             </Route>
             <Route path={'*'} element={<NotFoundPage/>} />

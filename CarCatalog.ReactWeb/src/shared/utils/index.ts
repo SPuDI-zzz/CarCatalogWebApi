@@ -1,3 +1,3 @@
-export * from './yupConfig';
+export * from './config';
 export * from './routes';
 export * from './types';

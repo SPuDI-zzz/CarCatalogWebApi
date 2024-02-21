@@ -2,7 +2,7 @@ import { Select } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import { CarStore } from 'entities/car';
 import { observer } from 'mobx-react-lite';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useMemo } from 'react';
 import styles from './index.module.css'
 
 interface CarMarkFilterProps {
@@ -10,11 +10,15 @@ interface CarMarkFilterProps {
 }
 
 const CarMarkFilter:FC<CarMarkFilterProps> = ({onChange}) => {
-    const [marks, setMarks] = useState(new Set<string>());
     const {cars} = CarStore;
 
-    useEffect(() => {
-        setMarks(new Set(cars.map(car => car.mark)))
+    const options = useMemo(() => {
+        const marksSet = new Set(cars.map(car => car.mark));
+        const markOptions = Array.from(marksSet).map(mark => ({
+            label: mark,
+            value: mark,
+        } as DefaultOptionType));
+        return markOptions;
     }, [cars]);
     
     return (
@@ -24,10 +28,7 @@ const CarMarkFilter:FC<CarMarkFilterProps> = ({onChange}) => {
             onChange={onChange}
             className={styles.select}
             placeholder={'Выберите марку'}
-            options={Array.from(marks).map(mark => ({
-                label: mark,
-                value: mark,
-            } as DefaultOptionType))}
+            options={options}
         />
     );
 };

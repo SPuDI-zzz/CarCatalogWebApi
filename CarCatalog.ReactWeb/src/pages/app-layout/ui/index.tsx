@@ -1,16 +1,17 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { Content, MainLayout } from 'shared/ui';
 import { Header } from 'widgets/header';
+import styles from './index.module.css'
+import { Layout } from 'antd';
 
 const AppLayout = () => {
     return (
-        <MainLayout>
+        <Layout className={styles.main}>
             <Header/>
-            <Content>
+            <Layout.Content className={styles.content}>
                 <Outlet/>
-            </Content>
-        </MainLayout>
+            </Layout.Content>
+        </Layout>           
     );
 };
 
