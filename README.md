@@ -8,13 +8,7 @@
 - After write `docker-compose up`
 - Open API in browser http://localhost:10000/swagger/index.html
 
-## You can start with Visual Studio
-
-Add postgres to Docker if you don't have one
-```powershell
-docker pull postgres
-```
-After
-```powershell
-docker run --name postgres --restart=always -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=carcatalogservice -v postgresvolume:/var/lib/postgresql/data -d postgres
-```
+## Frontend React
+- Open directory CarCatalog.ReactWeb
+- Write `npm install`
+- Write `npm start`
