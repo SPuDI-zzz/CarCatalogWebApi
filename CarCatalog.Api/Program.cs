@@ -39,7 +39,7 @@ try
 
     app.UseAppWebSockets();
 
-    app.UseCors(policy => policy.WithOrigins("http://127.0.0.1:5500").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+    app.UseCors(policy => policy.WithOrigins("http://localhost:5500", "http://127.0.0.1:5500", "http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 
     app.UseAppMiddlewares();
 

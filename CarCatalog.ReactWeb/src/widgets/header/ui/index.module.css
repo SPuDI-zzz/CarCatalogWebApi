@@ -1,0 +1,24 @@
+.header {
+    padding: 20px 0;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    justify-content: space-between;
+    background: transparent;
+}
+
+.loginBtn,
+.registerBtn,
+.logoutBtn {
+    color: var(--color-white);
+}
+
+.carIcon,
+.shoppingIcon {
+    font-size: 32px;
+}
+
+.shoppingIcon:hover {
+    cursor: pointer;
+    color: var(--color-blue);
+}
