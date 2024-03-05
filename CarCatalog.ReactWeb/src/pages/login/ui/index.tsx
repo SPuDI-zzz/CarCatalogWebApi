@@ -14,7 +14,7 @@ const Login = () => {
     const onFinish = async (data: ILogin) => {
         const isSignIn = await login(data);
         if (isSignIn) {
-            navigate(URL_ROUTES.CARS);
+            navigate(URL_ROUTES.CARS, { replace: true });
             await getClaimsAction();
         }
     }

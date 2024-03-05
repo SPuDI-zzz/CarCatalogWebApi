@@ -8,7 +8,7 @@ const NotFound = () => {
     const navigate = useNavigate();
 
     const onClick = () => {
-        navigate(URL_ROUTES.HOME);
+        navigate(URL_ROUTES.HOME, { replace: true });
     }
 
     return (

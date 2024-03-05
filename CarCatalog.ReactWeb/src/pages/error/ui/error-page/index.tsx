@@ -18,7 +18,7 @@ const ErrorPage:FC<ErrorPageProps> = ({error, reset}) => {
     const onClick = () => {
         resetError();
         reset();
-        navigate(URL_ROUTES.HOME);
+        navigate(URL_ROUTES.HOME, { replace: true });
     }
 
     if (axios.isAxiosError(error)) {

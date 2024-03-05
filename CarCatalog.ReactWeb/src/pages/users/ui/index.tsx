@@ -78,7 +78,7 @@ const Users = () => {
         if (error.response.status === HttpStatusCode.Unauthorized || 
             error.response.status === HttpStatusCode.Forbidden
         ) {
-            navigate(URL_ROUTES.LOGIN);
+            navigate(URL_ROUTES.LOGIN, { replace: true });
             logout();
             return;
         }

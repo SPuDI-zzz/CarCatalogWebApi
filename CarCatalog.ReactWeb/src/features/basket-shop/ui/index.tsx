@@ -22,15 +22,11 @@ const BasketShop:FC<BasketShopProps> = ({onClose, isOpened}) => {
 
     return (
         <Drawer
+            destroyOnClose={true}
             title={'Корзина'}
             onClose={onClose}
             open={isOpened}
             size={'large'}
-            styles={{
-                body: {
-                    paddingBottom: 80,
-                },
-            }}
         >
             <Row gutter={[24, 24]}>
                 {basketCars.map(car => 

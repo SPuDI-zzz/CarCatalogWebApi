@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { LoginPage } from 'pages/login';
 import { RegisterPage } from 'pages/register';
 import { URL_ROUTES } from 'shared/utils';
@@ -6,12 +6,12 @@ import { AuthStore } from 'features/auth';
 import { HomePage } from './home';
 import { CarsPage } from './cars';
 import { UsersPage } from './users';
-import { AppLayout } from './app-layout';
 import { observer } from 'mobx-react-lite';
-import { Loader } from 'shared/ui';
+import { AppLayout, Loader } from 'shared/ui';
 import { NotFoundPage } from './not-found';
 import { useLoadBasketCars } from 'features/basket-shop';
 import { ErrorBoundary } from './error';
+import { Header } from 'widgets/header';
 
 const Router = () => {
     const { isAuthenticated, inRole, userClaims, isFetched } = AuthStore;
@@ -24,7 +24,9 @@ const Router = () => {
         <Routes>
             <Route element={<ErrorBoundary/>}>
                 <Route 
-                    element={<AppLayout />}
+                    element={
+                        <AppLayout header={<Header/>} children={<Outlet/>}/>
+                    }
                 >
                     <Route path={URL_ROUTES.HOME} element={<HomePage />} />
                         {!isAuthenticated ?

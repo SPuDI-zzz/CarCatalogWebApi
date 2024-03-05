@@ -1,13 +1,21 @@
 import React from 'react';
 import 'app/index.css';
 import Router from 'pages';
-import WithDarkTheme from 'app/providers/with-dark-theme';
-import WithRouter from './providers/with-router';
+import { ConfigProvider, theme } from 'antd';
+import { BrowserRouter } from 'react-router-dom';
 
 const App = () => {
     return (
-        <Router/>
+        <ConfigProvider
+            theme={{
+                algorithm: theme.darkAlgorithm,
+            }}
+        >
+            <BrowserRouter>
+                <Router />
+            </BrowserRouter>
+        </ConfigProvider>
     );
 };
 
-export default WithDarkTheme(WithRouter(App));
+export default App;
